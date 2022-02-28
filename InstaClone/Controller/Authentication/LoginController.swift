@@ -7,10 +7,17 @@
 
 import UIKit
 
+protocol AuthenticationDelegate: AnyObject {
+    func authenticationDidComplete()
+}
+
 class LoginController: UIViewController {
     
     // MARK: - Properties
     private var viewModel = LoginViewModel()
+
+    // make sure it's a weak reference and not a strong reference, because if you have two strong references like a viewController or a class, it's gonna be hard for the memory management to destory both of those strong references. Then you will get what's known as a retained cycle where one of the references never gets deleted. So it causes a retained cycle which damages the performance of your application and cause memory leaks.
+    weak var delegate: AuthenticationDelegate?
     
     private let iconImage: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "Instagram_logo_white"))
@@ -76,12 +83,14 @@ class LoginController: UIViewController {
                 print("DEBUG: filed to log user in \(error.localizedDescription)")
                 return
             }
-            self.dismiss(animated: true, completion: nil)
+            
+            self.delegate?.authenticationDidComplete()
         }
     }
     
     @objc func handleShowSignUp() {
         let controller = RegistrationController()
+        controller.delegate = delegate
         navigationController?.pushViewController(controller, animated: true)
     }
     

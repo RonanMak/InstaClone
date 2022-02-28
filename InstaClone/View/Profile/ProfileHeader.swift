@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class ProfileHeader: UICollectionReusableView {
     
@@ -17,7 +18,8 @@ class ProfileHeader: UICollectionReusableView {
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "nightView")
+//        imageView.image = UIImage(named: "nightView")
+        imageView.backgroundColor = .lightGray
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         return imageView
@@ -25,7 +27,6 @@ class ProfileHeader: UICollectionReusableView {
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ronan mak"
         label.font = UIFont.boldSystemFont(ofSize: 14)
         label.textColor = .black
         return label
@@ -157,7 +158,9 @@ class ProfileHeader: UICollectionReusableView {
     }
     
     func configure() {
-        print("info here")
+        guard let viewModel = viewModel else { return }
+        nameLabel.text = viewModel.fullname
+        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
     }
     
     

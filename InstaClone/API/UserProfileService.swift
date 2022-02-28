@@ -25,7 +25,6 @@ struct UserProfileService {
 //
 //            let user = User(email: <#T##String#>, fullname: <#T##String#>, username: <#T##String#>, userID: <#T##String#>, profileImageUrl: <#T##String#>)
             
-            
         }
     }
 }

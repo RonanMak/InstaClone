@@ -42,6 +42,9 @@
 		7C9C3D9427C13C36006DB357 /* RegistrationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9C3D9327C13C36006DB357 /* RegistrationController.swift */; };
 		7CAE54E927C4BB410062987E /* imageUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE54E827C4BB410062987E /* imageUploader.swift */; };
 		7CAE54EB27C4BB4D0062987E /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE54EA27C4BB4D0062987E /* AuthService.swift */; };
+		7CC711F827CBC4BD00708BBA /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 7CC711F727CBC4BD00708BBA /* SDWebImage */; };
+		7CC711FA27CBC4BD00708BBA /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7CC711F927CBC4BD00708BBA /* SDWebImageMapKit */; };
+		7CC711FC27CD2C8A00708BBA /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC711FB27CD2C8A00708BBA /* UserCell.swift */; };
 		7CD27C8027BFC886006182CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD27C7F27BFC886006182CA /* AppDelegate.swift */; };
 		7CD27C8227BFC886006182CA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD27C8127BFC886006182CA /* SceneDelegate.swift */; };
 		7CD27C8427BFC886006182CA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD27C8327BFC886006182CA /* ViewController.swift */; };
@@ -92,6 +95,7 @@
 		7C9C3D9327C13C36006DB357 /* RegistrationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationController.swift; sourceTree = "<group>"; };
 		7CAE54E827C4BB410062987E /* imageUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = imageUploader.swift; sourceTree = "<group>"; };
 		7CAE54EA27C4BB4D0062987E /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		7CC711FB27CD2C8A00708BBA /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		7CD27C7C27BFC886006182CA /* InstaClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InstaClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CD27C7F27BFC886006182CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7CD27C8127BFC886006182CA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -133,6 +137,7 @@
 				7C9707E327C4B2A300C46489 /* FirebaseAuth in Frameworks */,
 				7C97080F27C4B2A300C46489 /* FirebaseStorageSwift-Beta in Frameworks */,
 				7C9707DB27C4B2A300C46489 /* FirebaseAnalyticsSwift-Beta in Frameworks */,
+				7CC711F827CBC4BD00708BBA /* SDWebImage in Frameworks */,
 				7C97080927C4B2A300C46489 /* FirebaseRemoteConfigSwift-Beta in Frameworks */,
 				7C97080127C4B2A300C46489 /* FirebaseMLModelDownloader in Frameworks */,
 				7C9707EF27C4B2A300C46489 /* FirebaseFirestore in Frameworks */,
@@ -141,6 +146,7 @@
 				7C9707DD27C4B2A300C46489 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				7C9707F327C4B2A300C46489 /* FirebaseFirestoreSwift-Beta in Frameworks */,
 				7C9707FB27C4B2A300C46489 /* FirebaseInAppMessaging-Beta in Frameworks */,
+				7CC711FA27CBC4BD00708BBA /* SDWebImageMapKit in Frameworks */,
 				7C9707E727C4B2A300C46489 /* FirebaseCrashlytics in Frameworks */,
 				7C9707E927C4B2A300C46489 /* FirebaseDatabase in Frameworks */,
 				7C97080D27C4B2A300C46489 /* FirebaseStorageCombine-Community in Frameworks */,
@@ -289,6 +295,7 @@
 				7CDB228C27C5353600E1E5FB /* Profile */,
 				7CD27CC227C0E2B0006182CA /* FeedCell.swift */,
 				7C9707D127C2568800C46489 /* CustomTextField.swift */,
+				7CC711FB27CD2C8A00708BBA /* UserCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -355,6 +362,8 @@
 				7C97080A27C4B2A300C46489 /* FirebaseStorage */,
 				7C97080C27C4B2A300C46489 /* FirebaseStorageCombine-Community */,
 				7C97080E27C4B2A300C46489 /* FirebaseStorageSwift-Beta */,
+				7CC711F727CBC4BD00708BBA /* SDWebImage */,
+				7CC711F927CBC4BD00708BBA /* SDWebImageMapKit */,
 			);
 			productName = InstaClone;
 			productReference = 7CD27C7C27BFC886006182CA /* InstaClone.app */;
@@ -430,6 +439,7 @@
 			mainGroup = 7CD27C7327BFC886006182CA;
 			packageReferences = (
 				7C9707D727C4B2A300C46489 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				7CC711F627CBC4BD00708BBA /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			productRefGroup = 7CD27C7D27BFC886006182CA /* Products */;
 			projectDirPath = "";
@@ -483,6 +493,7 @@
 				7CD27CBD27BFCA99006182CA /* ImageSelectorController.swift in Sources */,
 				7CD27CBF27BFCABA006182CA /* NotificationController.swift in Sources */,
 				7C9707D427C2936000C46489 /* AuthenticationViewModel.swift in Sources */,
+				7CC711FC27CD2C8A00708BBA /* UserCell.swift in Sources */,
 				7CD27CC527C0E47A006182CA /* Extension.swift in Sources */,
 				7CD27CBB27BFCA88006182CA /* SearchController.swift in Sources */,
 				7CDB229227C6724500E1E5FB /* User.swift in Sources */,
@@ -847,6 +858,14 @@
 				minimumVersion = 8.0.0;
 			};
 		};
+		7CC711F627CBC4BD00708BBA /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -989,6 +1008,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7C9707D727C4B2A300C46489 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseStorageSwift-Beta";
+		};
+		7CC711F727CBC4BD00708BBA /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7CC711F627CBC4BD00708BBA /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
+		};
+		7CC711F927CBC4BD00708BBA /* SDWebImageMapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7CC711F627CBC4BD00708BBA /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImageMapKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

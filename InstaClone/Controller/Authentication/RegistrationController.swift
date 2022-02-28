@@ -13,6 +13,7 @@ class RegistrationController: UIViewController {
     
     private var viewModel = RegistrationViewModel()
     private var profileImage: UIImage?
+    weak var delegate: AuthenticationDelegate?
     
     private let plusPhotoButton: UIButton = {
         let button = UIButton(type: .system)
@@ -99,7 +100,7 @@ class RegistrationController: UIViewController {
                 print("DEBUG: filed to register user \(error.localizedDescription)")
                 return
             }
-            self.dismiss(animated: true, completion: nil)
+            self.delegate?.authenticationDidComplete()
             print("Successfully registered user with firebase.")
         }
 
