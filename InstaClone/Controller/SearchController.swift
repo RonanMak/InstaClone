@@ -26,6 +26,13 @@ class SearchController: UITableViewController {
         view.backgroundColor = .white
         
         tableView.register(UserCell.self, forCellReuseIdentifier: reuseIdentifier)
+        tableView.rowHeight = 64
+        
+        let barAppearance = UINavigationBarAppearance()
+        barAppearance.backgroundColor = .lightGray
+        //                        barAppearance.backgroundEffect = UIBlurEffect(style: .dark)
+        navigationController?.navigationBar.scrollEdgeAppearance = barAppearance
+        navigationController?.navigationBar.standardAppearance = barAppearance
     }
 }
 
@@ -38,6 +45,7 @@ extension SearchController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
+        cell.backgroundColor = .white
         return cell
     }
 }
