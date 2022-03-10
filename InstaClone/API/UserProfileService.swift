@@ -7,6 +7,7 @@
 
 import Foundation
 import Firebase
+import FirebaseFirestoreSwift
 
 
 
@@ -27,4 +28,29 @@ struct UserProfileService {
             
         }
     }
+    
+    static func fetchUsers(completion: @escaping([User]) -> Void) {
+        COLLECTION_USERS.getDocuments { (snapshot, error) in
+            guard let snapshot = snapshot else { return }
+            
+            let users = snapshot.documents.map({ User(dictionary: $0.data()) })
+            completion(users)
+        }
+    }
+    
+//    static func fetchUser() {
+//
+//        var users = [User]()
+//
+//        COLLECTION_USERS.getDocuments { (snapshot, error) in
+//
+//            guard let snapshot = snapshot else { return }
+//
+//            snapshot.documents.forEach { document in print("\(document.data())")
+//                let user = User(dictionary: document.data())
+//                users.append(user)
+//
+//            }
+//        }
+//    }
 }

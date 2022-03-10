@@ -46,7 +46,7 @@ class ProfileController: UICollectionViewController {
         collectionView.register(ProfileHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerIdentifier)
         
         let barAppearance = UINavigationBarAppearance()
-        barAppearance.backgroundColor = .lightGray
+        barAppearance.backgroundColor = .white
         //                        barAppearance.backgroundEffect = UIBlurEffect(style: .dark)
         navigationController?.navigationBar.scrollEdgeAppearance = barAppearance
         navigationController?.navigationBar.standardAppearance = barAppearance

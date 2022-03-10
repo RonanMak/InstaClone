@@ -11,6 +11,10 @@ class UserCell: UITableViewCell {
     
     // MARK: - Properties
     
+    var viewModel: UserCellViewModel? {
+        didSet { configure() }
+    }
+    
     private let profileImageView: UIImageView = {
        let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -23,7 +27,7 @@ class UserCell: UITableViewCell {
     private let usernameLabel: UILabel = {
        let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.text = "RONAN"
+
         label.textColor = .black
         return label
     }()
@@ -31,7 +35,6 @@ class UserCell: UITableViewCell {
     private let fullnameLabel: UILabel = {
        let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.text = "RONAN mak ming"
         label.textColor = .lightGray
         return label
     }()
@@ -50,12 +53,21 @@ class UserCell: UITableViewCell {
         stack.axis = .vertical
         stack.spacing = 4
         stack.alignment = .leading
-        
         addSubview(stack)
         stack.centerY(inView: profileImageView, leftAnchor: profileImageView.rightAnchor, paddingLeft: 8)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Helpers
+    
+    func configure() {
+        guard let viewModel = viewModel else { return }
+        
+        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
+        usernameLabel.text = viewModel.username
+        fullnameLabel.text = viewModel.fullname
     }
 }

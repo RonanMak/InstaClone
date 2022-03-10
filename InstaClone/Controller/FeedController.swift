@@ -40,7 +40,7 @@ class FeedController: UICollectionViewController {
     func configureUI() {
         
         let barAppearance = UINavigationBarAppearance()
-        barAppearance.backgroundColor = .lightGray
+        barAppearance.backgroundColor = .white
         //                        barAppearance.backgroundEffect = UIBlurEffect(style: .dark)
         navigationController?.navigationBar.scrollEdgeAppearance = barAppearance
         navigationController?.navigationBar.standardAppearance = barAppearance
