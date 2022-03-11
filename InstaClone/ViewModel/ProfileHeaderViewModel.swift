@@ -34,7 +34,25 @@ struct ProfileHeaderViewModel {
         return user.isCurrentUser ? .black : user.isFollowed ? .black : .white
     }
     
+    var numberOfFollower: NSAttributedString {
+        return attributedStatText(value: user.stats.followers, label: "followers")
+    }
+    
+    var numberOfFollowing: NSAttributedString {
+        return attributedStatText(value: user.stats.following, label: "following")
+    }
+    
+    var numberOfPost: NSAttributedString {
+        return attributedStatText(value: 5, label: "posts")
+    }
+    
     init(user: User) {
         self.user = user
+    }
+    
+    func attributedStatText(value: Int, label: String) -> NSAttributedString {
+        let attributedLabel = NSMutableAttributedString(string: "\(value)\n" , attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
+        attributedLabel.append(NSAttributedString(string: label, attributes: [.font: UIFont.systemFont(ofSize: 14), .foregroundColor: UIColor.black]))
+        return attributedLabel
     }
 }

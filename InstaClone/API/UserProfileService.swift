@@ -70,4 +70,29 @@ struct UserProfileService {
             error in COLLECTION_FOLLOWERS.document(userID).collection("user-followers").document(currentUserID).delete(completion: completion)
         }        
     }
+    
+    static func checkIfUserIsFollowed(userID: String, completion: @escaping(Bool) -> Void) {
+        guard let currentUserID = Auth.auth().currentUser?.uid else { return }
+        
+        COLLECTION_FOLLOWING.document(currentUserID).collection("user-following").document(userID).getDocument {
+            (snapshot, error) in
+            
+            guard let isFollowed = snapshot?.exists else { return }
+            completion(isFollowed)
+        }
+    }
+    
+    static func fetchUserStats(userID: String, completion: @escaping(UserStats) -> Void) {
+        COLLECTION_FOLLOWERS.document(userID).collection("user-followers").getDocuments { (snapshot, _) in
+            
+            guard let followersNumber = snapshot?.documents.count else { return }
+            
+            COLLECTION_FOLLOWING.document(userID).collection("user-following").getDocuments { (snapshot, _) in
+                
+                guard let followingNumber = snapshot?.documents.count else { return }
+                
+                completion(UserStats(followers: followersNumber, following: followingNumber))
+            }
+        }
+    }
 }
