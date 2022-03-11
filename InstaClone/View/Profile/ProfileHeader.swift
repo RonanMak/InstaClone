@@ -8,9 +8,17 @@
 import UIKit
 import SDWebImage
 
+protocol ProfileHeaderDelegate: AnyObject {
+    func header(_ profilerHeader: ProfileHeader, didTapActionButtonFor user: User)
+//    func header(_ profilerHeader: ProfileHeader, wantsToUnfollow userID: String)
+//    func headerWantsToShowEditProfile(_ profilerHeader: ProfileHeader)
+}
+
 class ProfileHeader: UICollectionReusableView {
     
     // MARK: - Properties
+    
+    weak var delegate: ProfileHeaderDelegate?
     
     var viewModel: ProfileHeaderViewModel? {
         didSet { configure() }
@@ -146,7 +154,8 @@ class ProfileHeader: UICollectionReusableView {
     // MARK: - Actions
     
     @objc func handleEditProfileFollowTapped() {
-        print("kdjijiji")
+        guard let viewModel = viewModel else { return }
+        delegate?.header(self, didTapActionButtonFor: viewModel.user)
     }
     
     // MARK: - Helpers
@@ -159,8 +168,13 @@ class ProfileHeader: UICollectionReusableView {
     
     func configure() {
         guard let viewModel = viewModel else { return }
+        
         nameLabel.text = viewModel.fullname
         profileImageView.sd_setImage(with: viewModel.profileImageUrl)
+        
+        editProfileFollowButton.setTitle(viewModel.followButtonText, for: .normal)
+        editProfileFollowButton.setTitleColor(viewModel.followButtonTextColor, for: .normal)
+        editProfileFollowButton.backgroundColor = viewModel.followButtonBackgroundColor
     }
     
     

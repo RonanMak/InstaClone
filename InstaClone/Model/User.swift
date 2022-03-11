@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Firebase
 
 // MARK: - Model for a user
 // mirror all of the properties that the database have.
@@ -16,6 +17,10 @@ struct User {
     let username: String
     let userID: String
     let profileImageUrl: String
+    
+    var isFollowed = false
+    
+    var isCurrentUser: Bool { return Auth.auth().currentUser?.uid == userID}
     
     init(dictionary: [String: Any]) {
         self.email = dictionary["email"] as? String ?? ""

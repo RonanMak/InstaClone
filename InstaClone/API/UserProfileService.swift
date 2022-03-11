@@ -9,7 +9,7 @@ import Foundation
 import Firebase
 import FirebaseFirestoreSwift
 
-
+typealias FirestoreCompletion = (Error?) -> Void
 
 struct UserProfileService {
 
@@ -53,4 +53,21 @@ struct UserProfileService {
 //            }
 //        }
 //    }
+    
+    static func followUser(userID: String, completion: @escaping(FirestoreCompletion)) {
+        guard let currentUserID = Auth.auth().currentUser?.uid else { return }
+        
+        COLLECTION_FOLLOWING.document(currentUserID).collection("user-following")
+            .document(userID).setData([:]) { error in COLLECTION_FOLLOWERS.document(userID).collection("user-followers")
+            .document(currentUserID).setData([:], completion: completion)
+        }
+    }
+    
+    static func unfollowUser(userID: String, completion: @escaping(FirestoreCompletion)) {
+        guard let currentUserID = Auth.auth().currentUser?.uid else { return }
+        
+        COLLECTION_FOLLOWING.document(currentUserID).collection("user-following").document(userID).delete() {
+            error in COLLECTION_FOLLOWERS.document(userID).collection("user-followers").document(currentUserID).delete(completion: completion)
+        }        
+    }
 }
