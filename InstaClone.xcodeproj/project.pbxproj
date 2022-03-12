@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7C50F1E327DC89BA009FC1D9 /* YPImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 7C50F1E227DC89BA009FC1D9 /* YPImagePicker */; };
+		7C50F1E527DC9C3F009FC1D9 /* UploadPostController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C50F1E427DC9C3F009FC1D9 /* UploadPostController.swift */; };
+		7C50F1E727DCB1C3009FC1D9 /* inputTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C50F1E627DCB1C3009FC1D9 /* inputTextView.swift */; };
 		7C9707D227C2568800C46489 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9707D127C2568800C46489 /* CustomTextField.swift */; };
 		7C9707D427C2936000C46489 /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9707D327C2936000C46489 /* AuthenticationViewModel.swift */; };
 		7C9707D627C4AE9D00C46489 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C9707D527C4AE9D00C46489 /* GoogleService-Info.plist */; };
@@ -89,6 +92,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7C50F1E427DC9C3F009FC1D9 /* UploadPostController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPostController.swift; sourceTree = "<group>"; };
+		7C50F1E627DCB1C3009FC1D9 /* inputTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = inputTextView.swift; sourceTree = "<group>"; };
 		7C9707D127C2568800C46489 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
 		7C9707D327C2936000C46489 /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		7C9707D527C4AE9D00C46489 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -132,6 +137,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C50F1E327DC89BA009FC1D9 /* YPImagePicker in Frameworks */,
 				7C9707F127C4B2A300C46489 /* FirebaseFirestoreCombine-Community in Frameworks */,
 				7C9707EB27C4B2A300C46489 /* FirebaseDatabaseSwift-Beta in Frameworks */,
 				7C9707ED27C4B2A300C46489 /* FirebaseDynamicLinks in Frameworks */,
@@ -254,6 +260,7 @@
 			children = (
 				7CD27CC427C0E47A006182CA /* Extension.swift */,
 				7CDB228F27C66E7000E1E5FB /* Constants.swift */,
+				7C50F1E627DCB1C3009FC1D9 /* inputTextView.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -278,6 +285,7 @@
 				7CD27CBC27BFCA99006182CA /* ImageSelectorController.swift */,
 				7CD27CBE27BFCABA006182CA /* NotificationController.swift */,
 				7CD27CC027BFCB1D006182CA /* ProfileController.swift */,
+				7C50F1E427DC9C3F009FC1D9 /* UploadPostController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -367,6 +375,7 @@
 				7C97080E27C4B2A300C46489 /* FirebaseStorageSwift-Beta */,
 				7CC711F727CBC4BD00708BBA /* SDWebImage */,
 				7CC711F927CBC4BD00708BBA /* SDWebImageMapKit */,
+				7C50F1E227DC89BA009FC1D9 /* YPImagePicker */,
 			);
 			productName = InstaClone;
 			productReference = 7CD27C7C27BFC886006182CA /* InstaClone.app */;
@@ -443,6 +452,7 @@
 			packageReferences = (
 				7C9707D727C4B2A300C46489 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				7CC711F627CBC4BD00708BBA /* XCRemoteSwiftPackageReference "SDWebImage" */,
+				7C50F1E127DC89B9009FC1D9 /* XCRemoteSwiftPackageReference "YPImagePicker" */,
 			);
 			productRefGroup = 7CD27C7D27BFC886006182CA /* Products */;
 			projectDirPath = "";
@@ -490,6 +500,7 @@
 			files = (
 				7C9707D227C2568800C46489 /* CustomTextField.swift in Sources */,
 				7CDB228B27C5353100E1E5FB /* ProfileHeader.swift in Sources */,
+				7C50F1E527DC9C3F009FC1D9 /* UploadPostController.swift in Sources */,
 				7CD27C8427BFC886006182CA /* ViewController.swift in Sources */,
 				7C9C3D9227C13C22006DB357 /* LoginController.swift in Sources */,
 				7CD27CC327C0E2B0006182CA /* FeedCell.swift in Sources */,
@@ -507,6 +518,7 @@
 				7C9E168427CDF3C1008741AA /* UserCellViewModel.swift in Sources */,
 				7CD27CB927BFCA7E006182CA /* FeedController.swift in Sources */,
 				7CD27CB727BFC94C006182CA /* MainTabController.swift in Sources */,
+				7C50F1E727DCB1C3009FC1D9 /* inputTextView.swift in Sources */,
 				7CAE54E927C4BB410062987E /* imageUploader.swift in Sources */,
 				7CAE54EB27C4BB4D0062987E /* AuthService.swift in Sources */,
 				7CDB228E27C66E3E00E1E5FB /* UserProfileService.swift in Sources */,
@@ -854,6 +866,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		7C50F1E127DC89B9009FC1D9 /* XCRemoteSwiftPackageReference "YPImagePicker" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Yummypets/YPImagePicker.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		7C9707D727C4B2A300C46489 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -873,6 +893,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7C50F1E227DC89BA009FC1D9 /* YPImagePicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7C50F1E127DC89B9009FC1D9 /* XCRemoteSwiftPackageReference "YPImagePicker" */;
+			productName = YPImagePicker;
+		};
 		7C9707D827C4B2A300C46489 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7C9707D727C4B2A300C46489 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
