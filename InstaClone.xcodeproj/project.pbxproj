@@ -10,6 +10,10 @@
 		7C50F1E327DC89BA009FC1D9 /* YPImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 7C50F1E227DC89BA009FC1D9 /* YPImagePicker */; };
 		7C50F1E527DC9C3F009FC1D9 /* UploadPostController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C50F1E427DC9C3F009FC1D9 /* UploadPostController.swift */; };
 		7C50F1E727DCB1C3009FC1D9 /* inputTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C50F1E627DCB1C3009FC1D9 /* inputTextView.swift */; };
+		7C50F1E927DD0E3A009FC1D9 /* PostService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C50F1E827DD0E3A009FC1D9 /* PostService.swift */; };
+		7C50F1EC27E0C685009FC1D9 /* JGProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 7C50F1EB27E0C685009FC1D9 /* JGProgressHUD */; };
+		7C50F1EE27E0D356009FC1D9 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C50F1ED27E0D356009FC1D9 /* Post.swift */; };
+		7C50F1F027E0DA4A009FC1D9 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C50F1EF27E0DA4A009FC1D9 /* PostViewModel.swift */; };
 		7C9707D227C2568800C46489 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9707D127C2568800C46489 /* CustomTextField.swift */; };
 		7C9707D427C2936000C46489 /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9707D327C2936000C46489 /* AuthenticationViewModel.swift */; };
 		7C9707D627C4AE9D00C46489 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7C9707D527C4AE9D00C46489 /* GoogleService-Info.plist */; };
@@ -94,6 +98,9 @@
 /* Begin PBXFileReference section */
 		7C50F1E427DC9C3F009FC1D9 /* UploadPostController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPostController.swift; sourceTree = "<group>"; };
 		7C50F1E627DCB1C3009FC1D9 /* inputTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = inputTextView.swift; sourceTree = "<group>"; };
+		7C50F1E827DD0E3A009FC1D9 /* PostService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostService.swift; sourceTree = "<group>"; };
+		7C50F1ED27E0D356009FC1D9 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		7C50F1EF27E0DA4A009FC1D9 /* PostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		7C9707D127C2568800C46489 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
 		7C9707D327C2936000C46489 /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		7C9707D527C4AE9D00C46489 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -157,6 +164,7 @@
 				7CC711FA27CBC4BD00708BBA /* SDWebImageMapKit in Frameworks */,
 				7C9707E727C4B2A300C46489 /* FirebaseCrashlytics in Frameworks */,
 				7C9707E927C4B2A300C46489 /* FirebaseDatabase in Frameworks */,
+				7C50F1EC27E0C685009FC1D9 /* JGProgressHUD in Frameworks */,
 				7C97080D27C4B2A300C46489 /* FirebaseStorageCombine-Community in Frameworks */,
 				7C97080727C4B2A300C46489 /* FirebaseRemoteConfig in Frameworks */,
 				7C9707F927C4B2A300C46489 /* FirebaseFunctionsSwift-Beta in Frameworks */,
@@ -271,6 +279,7 @@
 				7CAE54E827C4BB410062987E /* imageUploader.swift */,
 				7CAE54EA27C4BB4D0062987E /* AuthService.swift */,
 				7CDB228D27C66E3E00E1E5FB /* UserProfileService.swift */,
+				7C50F1E827DD0E3A009FC1D9 /* PostService.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -296,6 +305,7 @@
 				7C9707D327C2936000C46489 /* AuthenticationViewModel.swift */,
 				7CDB229327C6941600E1E5FB /* ProfileHeaderViewModel.swift */,
 				7C9E168327CDF3C1008741AA /* UserCellViewModel.swift */,
+				7C50F1EF27E0DA4A009FC1D9 /* PostViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -315,6 +325,7 @@
 			isa = PBXGroup;
 			children = (
 				7CDB229127C6724500E1E5FB /* User.swift */,
+				7C50F1ED27E0D356009FC1D9 /* Post.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -376,6 +387,7 @@
 				7CC711F727CBC4BD00708BBA /* SDWebImage */,
 				7CC711F927CBC4BD00708BBA /* SDWebImageMapKit */,
 				7C50F1E227DC89BA009FC1D9 /* YPImagePicker */,
+				7C50F1EB27E0C685009FC1D9 /* JGProgressHUD */,
 			);
 			productName = InstaClone;
 			productReference = 7CD27C7C27BFC886006182CA /* InstaClone.app */;
@@ -453,6 +465,7 @@
 				7C9707D727C4B2A300C46489 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				7CC711F627CBC4BD00708BBA /* XCRemoteSwiftPackageReference "SDWebImage" */,
 				7C50F1E127DC89B9009FC1D9 /* XCRemoteSwiftPackageReference "YPImagePicker" */,
+				7C50F1EA27E0C685009FC1D9 /* XCRemoteSwiftPackageReference "JGProgressHUD" */,
 			);
 			productRefGroup = 7CD27C7D27BFC886006182CA /* Products */;
 			projectDirPath = "";
@@ -498,6 +511,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C50F1F027E0DA4A009FC1D9 /* PostViewModel.swift in Sources */,
 				7C9707D227C2568800C46489 /* CustomTextField.swift in Sources */,
 				7CDB228B27C5353100E1E5FB /* ProfileHeader.swift in Sources */,
 				7C50F1E527DC9C3F009FC1D9 /* UploadPostController.swift in Sources */,
@@ -520,7 +534,9 @@
 				7CD27CB727BFC94C006182CA /* MainTabController.swift in Sources */,
 				7C50F1E727DCB1C3009FC1D9 /* inputTextView.swift in Sources */,
 				7CAE54E927C4BB410062987E /* imageUploader.swift in Sources */,
+				7C50F1EE27E0D356009FC1D9 /* Post.swift in Sources */,
 				7CAE54EB27C4BB4D0062987E /* AuthService.swift in Sources */,
+				7C50F1E927DD0E3A009FC1D9 /* PostService.swift in Sources */,
 				7CDB228E27C66E3E00E1E5FB /* UserProfileService.swift in Sources */,
 				7CDB228927C5351700E1E5FB /* ProfileCell.swift in Sources */,
 				7CD27C8227BFC886006182CA /* SceneDelegate.swift in Sources */,
@@ -874,6 +890,14 @@
 				kind = branch;
 			};
 		};
+		7C50F1EA27E0C685009FC1D9 /* XCRemoteSwiftPackageReference "JGProgressHUD" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/JonasGessner/JGProgressHUD.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		7C9707D727C4B2A300C46489 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -897,6 +921,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7C50F1E127DC89B9009FC1D9 /* XCRemoteSwiftPackageReference "YPImagePicker" */;
 			productName = YPImagePicker;
+		};
+		7C50F1EB27E0C685009FC1D9 /* JGProgressHUD */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7C50F1EA27E0C685009FC1D9 /* XCRemoteSwiftPackageReference "JGProgressHUD" */;
+			productName = JGProgressHUD;
 		};
 		7C9707D827C4B2A300C46489 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;

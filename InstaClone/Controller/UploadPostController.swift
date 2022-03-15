@@ -5,12 +5,23 @@
 //  Created by Ronan Mak on 12/3/2022.
 //
 
-import Foundation
 import UIKit
+
+protocol UploadPostControllerDelegate: AnyObject {
+    func controllerDidFinishUploadingPost(_ controller: UploadPostController)
+}
 
 class UploadPostController: UIViewController {
     
     // MARK: - Properties
+    
+    weak var delegate: UploadPostControllerDelegate?
+    
+    var currentUser: User?
+    
+    var selectedImage: UIImage? {
+        didSet { photoImageView.image = selectedImage }
+    }
     
     private let photoImageView: UIImageView = {
         let imageView = UIImageView()
@@ -22,10 +33,11 @@ class UploadPostController: UIViewController {
     
     // textView doesn't have a placeholder
     
-    private let captionTextView: InputTextView = {
+    private lazy var captionTextView: InputTextView = {
         let textView = InputTextView()
-        textView.placeholderLabel.text = "Enter caption..."
+        textView.placeholderText = "Enter caption..."
         textView.font = UIFont.systemFont(ofSize: 16)
+        textView.delegate = self
         return textView
     }()
     
@@ -51,10 +63,32 @@ class UploadPostController: UIViewController {
     }
     
     @objc func didTapDone() {
-        print("share post")
+        guard let image = selectedImage else { return }
+        guard let caption = captionTextView.text else { return }
+        guard let currentUser = self.currentUser else { return }
+        
+        showLoader(true)
+        
+        PostService.uploadPost(caption: caption, image: image, user: currentUser) { error in
+            
+            self.showLoader(false)
+            
+            if let error = error {
+                print("Failed to upload post \(error)")
+                return
+            }
+            
+            self.delegate?.controllerDidFinishUploadingPost(self)
+        }
     }
     
     // MARK: - Helpers
+    
+    func checkMaxLength(_ textView: UITextView) {
+        if (textView.text.count) > 100 {
+            textView.deleteBackward()
+        }
+    }
     
     func configureUI() {
         view.backgroundColor = .white
@@ -92,6 +126,17 @@ class UploadPostController: UIViewController {
         characterCountLabel.anchor(
             bottom: captionTextView.bottomAnchor,
             right: view.rightAnchor,
+            paddingBottom: -8,
             paddingRight: 12)
+    }
+}
+
+// MARK: - UITextViewDelegate
+
+extension UploadPostController: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        checkMaxLength(textView)
+        let count = textView.text.count
+        characterCountLabel.text = "\(count)/100"
     }
 }
