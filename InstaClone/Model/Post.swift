@@ -27,5 +27,5 @@ struct Post {
         self.postID = dictionary["postID"] as? String ?? ""
         self.ownerImageUrl = dictionary["ownerImageUrl"] as? String ?? ""
         self.ownerUsername = dictionary["ownerUsername"] as? String ?? ""
-    }
+    } 
 }
