@@ -91,7 +91,14 @@ struct UserProfileService {
                 
                 guard let followingNumber = snapshot?.documents.count else { return }
                 
-                completion(UserStats(followers: followersNumber, following: followingNumber))
+                COLLECTION_POSTS.whereField("ownerUserID", isEqualTo: userID).getDocuments { (snapshot, _) in
+                    
+                    guard let postNumber = snapshot?.documents.count else { return }
+                    
+                    completion(UserStats(followers: followersNumber, following: followingNumber, posts: postNumber))
+                }
+                
+
             }
         }
     }

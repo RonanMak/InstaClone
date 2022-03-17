@@ -37,4 +37,17 @@ struct PostService {
             completion(posts)
         }
     }
+    
+    static func fetchPosts(forUser userID: String, completion: @escaping([Post]) -> Void) {
+        let query = COLLECTION_POSTS.whereField("ownerUserID", isEqualTo: userID)
+        
+        query.getDocuments { (snapshot, error) in
+            guard let documents = snapshot?.documents else { return }
+            
+            print("\(documents)")
+            
+            let posts = documents.map({ Post(postID: $0.documentID, dictionary: $0.data()) })
+            completion(posts)
+        }
+    }
 }

@@ -47,7 +47,6 @@ class FeedCell: UICollectionViewCell {
     private lazy var likeButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "like_unselected"), for: .normal)
-        
         button.tintColor = .black
         button.addTarget(self, action: #selector(didTapUsername), for: .touchUpInside)
         return button
@@ -56,7 +55,6 @@ class FeedCell: UICollectionViewCell {
     private lazy var commentButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "comment"), for: .normal)
-        
         button.tintColor = .black
         button.addTarget(self, action: #selector(didTapUsername), for: .touchUpInside)
         return button
@@ -65,7 +63,6 @@ class FeedCell: UICollectionViewCell {
     private lazy var shareButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "send2"), for: .normal)
-        
         button.tintColor = .black
         button.addTarget(self, action: #selector(didTapUsername), for: .touchUpInside)
         return button
@@ -73,7 +70,6 @@ class FeedCell: UICollectionViewCell {
     
     private let likesLabel: UILabel = {
         let label = UILabel()
-        label.text = "99999 likes"
         label.font = UIFont.boldSystemFont(ofSize: 13)
         label.textColor = .black
         return label
@@ -88,7 +84,6 @@ class FeedCell: UICollectionViewCell {
     
     private let postTimeLabel: UILabel = {
         let label = UILabel()
-        label.text = "1 mins ago"
         label.font = UIFont.boldSystemFont(ofSize: 12)
         label.textColor = .lightGray
         return label
