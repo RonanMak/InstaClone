@@ -46,7 +46,12 @@ struct PostService {
             
             print("\(documents)")
             
-            let posts = documents.map({ Post(postID: $0.documentID, dictionary: $0.data()) })
+            var posts = documents.map({ Post(postID: $0.documentID, dictionary: $0.data()) })
+            
+            posts.sort { (post1, post2) -> Bool in
+                return post1.timestamp.seconds > post2.timestamp.seconds
+            }
+            
             completion(posts)
         }
     }
