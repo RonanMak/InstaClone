@@ -1,5 +1,5 @@
 //
-//  CommentInputAccessoryView.swift
+//  CommentInputAccesoryView.swift
 //  InstaClone
 //
 //  Created by Ronan Mak on 18/3/2022.
@@ -7,9 +7,17 @@
 
 import UIKit
 
-class CommentInputAccessoryView: UIView {
+// create a protocol in this file and then use a delegate once again to delegate action back to the combat controller so we can handle all that stuff
+
+protocol CommentInputAccesoryViewDelegate: AnyObject {
+    func inputView( _ inputView: CommentInputAccesoryView, wantsToUploadComment comment: String)
+}
+
+class CommentInputAccesoryView: UIView {
     
     // MARK: - Properties
+    
+    weak var delegate: CommentInputAccesoryViewDelegate?
     
     private let commentTextView: InputTextView = {
        let textView = InputTextView()
@@ -36,6 +44,7 @@ class CommentInputAccessoryView: UIView {
         
         // important
         autoresizingMask = .flexibleHeight
+        backgroundColor = .white
         
         addSubview(postButton)
         postButton.anchor(top: topAnchor, right: rightAnchor, paddingRight: 8)
@@ -69,6 +78,13 @@ class CommentInputAccessoryView: UIView {
     // MARK: - Actions
     
     @objc func handlePostTapped() {
-         
+        delegate?.inputView(self, wantsToUploadComment: commentTextView.text)
+    }
+    
+    // MARK: - Helpers
+    
+    func clearCommentTextView() {
+        commentTextView.text = nil
+        commentTextView.placeholderLabel.isHidden = false
     }
 }

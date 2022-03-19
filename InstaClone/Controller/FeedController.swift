@@ -43,7 +43,7 @@ class FeedController: UICollectionViewController {
             nav.modalPresentationStyle = .fullScreen
             self.present(nav, animated: true, completion: nil)
         } catch {
-            print("DEBUG: fauled to sign out")
+            print("DEBUG: failed to sign out")
         }
     }
     
@@ -53,8 +53,8 @@ class FeedController: UICollectionViewController {
         guard post == nil else { return }
         PostService.fetchPosts { posts in
             self.posts = posts
-            
-            print("did fetch posts")
+//            print("\(self.posts) hihihihihihihihi")
+//            print("did fetch posts")
             self.collectionView.refreshControl?.endRefreshing()
             self.collectionView.reloadData()
         }
@@ -136,7 +136,7 @@ extension FeedController: UICollectionViewDelegateFlowLayout {
 
 extension FeedController: FeedCellDelegate {
     func cell(_ cell: FeedCell, wantsToShowCommentsFor post: Post) {
-        let controller = CommentController(collectionViewLayout: UICollectionViewFlowLayout())
+        let controller = CommentController(post: post)
         navigationController?.pushViewController(controller, animated: true)
     }
 }

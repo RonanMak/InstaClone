@@ -33,7 +33,6 @@ struct PostService {
             guard let documents = snapshot?.documents else { return }
             
             let posts = documents.map({ Post(postID: $0.documentID, dictionary: $0.data()) })
-//            print("\(posts)")
             completion(posts)
         }
     }
@@ -43,8 +42,6 @@ struct PostService {
         
         query.getDocuments { (snapshot, error) in
             guard let documents = snapshot?.documents else { return }
-            
-            print("\(documents)")
             
             var posts = documents.map({ Post(postID: $0.documentID, dictionary: $0.data()) })
             
