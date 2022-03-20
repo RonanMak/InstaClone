@@ -57,6 +57,8 @@
 		7CCAE7C227E40B90008BC6BE /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CCAE7C127E40B90008BC6BE /* CommentCell.swift */; };
 		7CCAE7C427E4D97C008BC6BE /* CommentInputAccesoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CCAE7C327E4D97C008BC6BE /* CommentInputAccesoryView.swift */; };
 		7CCAE7C627E5F55B008BC6BE /* CommentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CCAE7C527E5F55B008BC6BE /* CommentService.swift */; };
+		7CCAE7C827E764E3008BC6BE /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CCAE7C727E764E3008BC6BE /* Comment.swift */; };
+		7CCAE7CA27E7685E008BC6BE /* CommentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CCAE7C927E7685E008BC6BE /* CommentViewModel.swift */; };
 		7CD27C8027BFC886006182CA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD27C7F27BFC886006182CA /* AppDelegate.swift */; };
 		7CD27C8227BFC886006182CA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD27C8127BFC886006182CA /* SceneDelegate.swift */; };
 		7CD27C8427BFC886006182CA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CD27C8327BFC886006182CA /* ViewController.swift */; };
@@ -118,6 +120,8 @@
 		7CCAE7C127E40B90008BC6BE /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
 		7CCAE7C327E4D97C008BC6BE /* CommentInputAccesoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentInputAccesoryView.swift; sourceTree = "<group>"; };
 		7CCAE7C527E5F55B008BC6BE /* CommentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentService.swift; sourceTree = "<group>"; };
+		7CCAE7C727E764E3008BC6BE /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
+		7CCAE7C927E7685E008BC6BE /* CommentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewModel.swift; sourceTree = "<group>"; };
 		7CD27C7C27BFC886006182CA /* InstaClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InstaClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CD27C7F27BFC886006182CA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7CD27C8127BFC886006182CA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -316,6 +320,7 @@
 				7CDB229327C6941600E1E5FB /* ProfileHeaderViewModel.swift */,
 				7C9E168327CDF3C1008741AA /* UserCellViewModel.swift */,
 				7C50F1EF27E0DA4A009FC1D9 /* PostViewModel.swift */,
+				7CCAE7C927E7685E008BC6BE /* CommentViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -338,6 +343,7 @@
 			children = (
 				7CDB229127C6724500E1E5FB /* User.swift */,
 				7C50F1ED27E0D356009FC1D9 /* Post.swift */,
+				7CCAE7C727E764E3008BC6BE /* Comment.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -523,6 +529,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7CCAE7CA27E7685E008BC6BE /* CommentViewModel.swift in Sources */,
 				7C50F1F027E0DA4A009FC1D9 /* PostViewModel.swift in Sources */,
 				7C9707D227C2568800C46489 /* CustomTextField.swift in Sources */,
 				7CDB228B27C5353100E1E5FB /* ProfileHeader.swift in Sources */,
@@ -533,6 +540,7 @@
 				7CD27CC327C0E2B0006182CA /* FeedCell.swift in Sources */,
 				7CD27CBD27BFCA99006182CA /* ImageSelectorController.swift in Sources */,
 				7CCAE7C627E5F55B008BC6BE /* CommentService.swift in Sources */,
+				7CCAE7C827E764E3008BC6BE /* Comment.swift in Sources */,
 				7CD27CBF27BFCABA006182CA /* NotificationController.swift in Sources */,
 				7C9707D427C2936000C46489 /* AuthenticationViewModel.swift in Sources */,
 				7CC711FC27CD2C8A00708BBA /* UserCell.swift in Sources */,
