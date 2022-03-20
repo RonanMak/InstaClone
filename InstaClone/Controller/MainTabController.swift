@@ -33,7 +33,8 @@ class MainTabController: UITabBarController {
     // MARK: - API
     
     func fetchUser() {
-        UserProfileService.fetchUser { user in
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+            UserProfileService.fetchUser(withUserID: userID) { user in
             self.user = user
         }
     }

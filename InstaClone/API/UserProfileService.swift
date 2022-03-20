@@ -14,8 +14,8 @@ typealias FirestoreCompletion = (Error?) -> Void
 struct UserProfileService {
 
     // call this func once it's done doing its thing, and execute the completion handler, then give a user back.
-    static func fetchUser(completion: @escaping(User) -> Void) {
-        guard let userID = Auth.auth().currentUser?.uid else { return }
+    static func fetchUser(withUserID userID: String, completion: @escaping(User) -> Void) {
+//        guard let userID = Auth.auth().currentUser?.uid else { return }
         COLLECTION_USERS.document(userID).getDocument {
             snapchot, error in
            
