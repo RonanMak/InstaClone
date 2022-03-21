@@ -6,10 +6,19 @@
 //
 
 import UIKit
+import SDWebImage
+
+protocol ProfileHeaderDelegate: AnyObject {
+    func header(_ profilerHeader: ProfileHeader, didTapActionButtonFor user: User)
+//    func header(_ profilerHeader: ProfileHeader, wantsToUnfollow userID: String)
+//    func headerWantsToShowEditProfile(_ profilerHeader: ProfileHeader)
+}
 
 class ProfileHeader: UICollectionReusableView {
     
     // MARK: - Properties
+    
+    weak var delegate: ProfileHeaderDelegate?
     
     var viewModel: ProfileHeaderViewModel? {
         didSet { configure() }
@@ -17,7 +26,8 @@ class ProfileHeader: UICollectionReusableView {
     
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "nightView")
+//        imageView.image = UIImage(named: "nightView")
+        imageView.backgroundColor = .lightGray
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         return imageView
@@ -25,7 +35,6 @@ class ProfileHeader: UICollectionReusableView {
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ronan mak"
         label.font = UIFont.boldSystemFont(ofSize: 14)
         label.textColor = .black
         return label
@@ -50,7 +59,6 @@ class ProfileHeader: UICollectionReusableView {
         label.numberOfLines = 0
         label.textAlignment = .center
         label.textColor = .black
-        label.attributedText = attributedStatText(value: 123, label: "Posts")
         return label
     }()
     
@@ -59,7 +67,6 @@ class ProfileHeader: UICollectionReusableView {
         label.numberOfLines = 0
         label.textAlignment = .center
         label.textColor = .black
-        label.attributedText = attributedStatText(value: 53, label: "Followers")
         return label
     }()
     
@@ -68,7 +75,6 @@ class ProfileHeader: UICollectionReusableView {
         label.numberOfLines = 0
         label.textAlignment = .center
         label.textColor = .black
-        label.attributedText = attributedStatText(value: 1029, label: "Following")
         return label
     }()
     
@@ -145,19 +151,26 @@ class ProfileHeader: UICollectionReusableView {
     // MARK: - Actions
     
     @objc func handleEditProfileFollowTapped() {
-        print("kdjijiji")
+        guard let viewModel = viewModel else { return }
+        delegate?.header(self, didTapActionButtonFor: viewModel.user)
     }
     
     // MARK: - Helpers
     
-    func attributedStatText(value: Int, label: String) -> NSAttributedString {
-        let attributedLabel = NSMutableAttributedString(string: "\(value)\n" , attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
-        attributedLabel.append(NSAttributedString(string: label, attributes: [.font: UIFont.systemFont(ofSize: 14), .foregroundColor: UIColor.black]))
-        return attributedLabel
-    }
-    
     func configure() {
-        print("info here")
+        guard let viewModel = viewModel else { return }
+        
+        nameLabel.text = viewModel.fullname
+        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
+        
+        editProfileFollowButton.setTitle(viewModel.followButtonText, for: .normal)
+        editProfileFollowButton.setTitleColor(viewModel.followButtonTextColor, for: .normal)
+        editProfileFollowButton.backgroundColor = viewModel.followButtonBackgroundColor
+        
+        postLabel.attributedText = viewModel.numberOfPost
+        followersLabel.attributedText = viewModel.numberOfFollower
+        followingLabel.attributedText = viewModel.numberOfFollowing
+        postLabel.attributedText = viewModel.numberOfPost
     }
     
     
