@@ -21,6 +21,15 @@ struct PostViewModel {
     
     var username: String { return post.ownerUsername }
     
+    var likeButtonTintColor: UIColor {
+        return post.didLike ? .red : .black
+    }
+    
+    var likeButtonImage: UIImage? {
+        let imageName = post.didLike ? "like_selected" : "like_unselected"
+        return UIImage(named: imageName)
+    }
+    
     var likesLabelText: String {
         if post.likes != 1 {
             return "\(post.likes) likes"

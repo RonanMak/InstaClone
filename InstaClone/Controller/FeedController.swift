@@ -14,7 +14,9 @@ class FeedController: UICollectionViewController {
     
     // MARK: - Properties
     
-    private var posts = [Post]()
+    private var posts = [Post]() {
+        didSet { collectionView.reloadData() }
+    }
     
     var post: Post?
     
@@ -22,7 +24,6 @@ class FeedController: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         configureUI()
         fetchPosts()
     }
@@ -53,10 +54,18 @@ class FeedController: UICollectionViewController {
         guard post == nil else { return }
         PostService.fetchPosts { posts in
             self.posts = posts
-//            print("\(self.posts) hihihihihihihihi")
-//            print("did fetch posts")
             self.collectionView.refreshControl?.endRefreshing()
-            self.collectionView.reloadData()
+            self.checkIfUserLikedPosts()
+        }
+    }
+    
+    func checkIfUserLikedPosts() {
+        self.posts.forEach { post in
+            PostService.checkIfUserLikedPost(post: post) { didLike in
+                if let index = self.posts.firstIndex(where: { $0.postID == post.postID }) {
+                    self.posts[index].didLike = didLike
+                }
+            }
         }
     }
     
@@ -114,9 +123,17 @@ extension FeedController {
                 cell.viewModel = PostViewModel(post: posts[indexPath.row])
             }
         }
-        
         return cell
     }
+    
+    //    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    //        guard let userID = self.post?.ownerUserID else { return }
+    //
+    //        UserProfileService.fetchUser(withUserID: userID) { user in
+    //            let controller = ProfileController(user: user)
+    //            self.navigationController?.pushViewController(controller, animated: true)
+    //        }
+    //    }
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
@@ -132,21 +149,45 @@ extension FeedController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-// MARK: -FeedCellDelegate
+// MARK: - FeedCellDelegate
 
 extension FeedController: FeedCellDelegate {
+    func didTapIconButton(_ cell: FeedCell, wantsToShowProfileFor ownerID: String) {
+        UserProfileService.fetchUser(withUserID: ownerID) { user in
+            let controller = ProfileController(user: user)
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
+    }
+    
     func cell(_ cell: FeedCell, wantsToShowCommentsFor post: Post) {
         let controller = CommentController(post: post)
         navigationController?.pushViewController(controller, animated: true)
     }
     
     func cell(_ cell: FeedCell, didLike post: Post) {
+        
+        guard let tab = self.tabBarController as? MainTabController else { return }
+        guard let user = tab.user else { return }
+        
         cell.viewModel?.post.didLike.toggle()
         
         if post.didLike {
-            print("unlike post")
+            PostService.unlikePost(post: post) { _ in
+                cell.likeButton.setImage(#imageLiteral(resourceName: "like_unselected"), for: .normal)
+                cell.likeButton.tintColor = .black
+                cell.viewModel?.post.likes = post.likes - 1
+            }
         } else {
-            print("liked post")
+            PostService.likePost(post: post) { _ in
+                cell.likeButton.setImage(#imageLiteral(resourceName: "like_selected"), for: .normal)
+                cell.likeButton.tintColor = .red
+                cell.viewModel?.post.likes = post.likes + 1
+                
+                NotificationService.uploadNotification(toUserID: post.ownerUserID,
+                                                       fromUser: user,
+                                                       type: .like,
+                                                       post: post)
+            }
         }
     }
 }

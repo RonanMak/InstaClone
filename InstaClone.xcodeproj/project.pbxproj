@@ -48,6 +48,10 @@
 		7C9C3D9227C13C22006DB357 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9C3D9127C13C22006DB357 /* LoginController.swift */; };
 		7C9C3D9427C13C36006DB357 /* RegistrationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9C3D9327C13C36006DB357 /* RegistrationController.swift */; };
 		7C9E168427CDF3C1008741AA /* UserCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9E168327CDF3C1008741AA /* UserCellViewModel.swift */; };
+		7CA8E16E27EB812D00C4EB83 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA8E16D27EB812D00C4EB83 /* NotificationCell.swift */; };
+		7CA8E17027ECCD4300C4EB83 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA8E16F27ECCD4300C4EB83 /* Notification.swift */; };
+		7CA8E17227ECD44400C4EB83 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA8E17127ECD44400C4EB83 /* NotificationService.swift */; };
+		7CA8E17427EE32C800C4EB83 /* NotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA8E17327EE32C800C4EB83 /* NotificationViewModel.swift */; };
 		7CAE54E927C4BB410062987E /* imageUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE54E827C4BB410062987E /* imageUploader.swift */; };
 		7CAE54EB27C4BB4D0062987E /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CAE54EA27C4BB4D0062987E /* AuthService.swift */; };
 		7CC711F827CBC4BD00708BBA /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 7CC711F727CBC4BD00708BBA /* SDWebImage */; };
@@ -113,6 +117,10 @@
 		7C9C3D9127C13C22006DB357 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		7C9C3D9327C13C36006DB357 /* RegistrationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationController.swift; sourceTree = "<group>"; };
 		7C9E168327CDF3C1008741AA /* UserCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCellViewModel.swift; sourceTree = "<group>"; };
+		7CA8E16D27EB812D00C4EB83 /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
+		7CA8E16F27ECCD4300C4EB83 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
+		7CA8E17127ECD44400C4EB83 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		7CA8E17327EE32C800C4EB83 /* NotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewModel.swift; sourceTree = "<group>"; };
 		7CAE54E827C4BB410062987E /* imageUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = imageUploader.swift; sourceTree = "<group>"; };
 		7CAE54EA27C4BB4D0062987E /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		7CC711FB27CD2C8A00708BBA /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
@@ -293,6 +301,7 @@
 				7CDB228D27C66E3E00E1E5FB /* UserProfileService.swift */,
 				7C50F1E827DD0E3A009FC1D9 /* PostService.swift */,
 				7CCAE7C527E5F55B008BC6BE /* CommentService.swift */,
+				7CA8E17127ECD44400C4EB83 /* NotificationService.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -321,6 +330,7 @@
 				7C9E168327CDF3C1008741AA /* UserCellViewModel.swift */,
 				7C50F1EF27E0DA4A009FC1D9 /* PostViewModel.swift */,
 				7CCAE7C927E7685E008BC6BE /* CommentViewModel.swift */,
+				7CA8E17327EE32C800C4EB83 /* NotificationViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -334,6 +344,7 @@
 				7CC711FB27CD2C8A00708BBA /* UserCell.swift */,
 				7CCAE7C127E40B90008BC6BE /* CommentCell.swift */,
 				7CCAE7C327E4D97C008BC6BE /* CommentInputAccesoryView.swift */,
+				7CA8E16D27EB812D00C4EB83 /* NotificationCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -344,6 +355,7 @@
 				7CDB229127C6724500E1E5FB /* User.swift */,
 				7C50F1ED27E0D356009FC1D9 /* Post.swift */,
 				7CCAE7C727E764E3008BC6BE /* Comment.swift */,
+				7CA8E16F27ECCD4300C4EB83 /* Notification.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -530,6 +542,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7CCAE7CA27E7685E008BC6BE /* CommentViewModel.swift in Sources */,
+				7CA8E17427EE32C800C4EB83 /* NotificationViewModel.swift in Sources */,
 				7C50F1F027E0DA4A009FC1D9 /* PostViewModel.swift in Sources */,
 				7C9707D227C2568800C46489 /* CustomTextField.swift in Sources */,
 				7CDB228B27C5353100E1E5FB /* ProfileHeader.swift in Sources */,
@@ -541,6 +554,7 @@
 				7CD27CBD27BFCA99006182CA /* ImageSelectorController.swift in Sources */,
 				7CCAE7C627E5F55B008BC6BE /* CommentService.swift in Sources */,
 				7CCAE7C827E764E3008BC6BE /* Comment.swift in Sources */,
+				7CA8E17027ECCD4300C4EB83 /* Notification.swift in Sources */,
 				7CD27CBF27BFCABA006182CA /* NotificationController.swift in Sources */,
 				7C9707D427C2936000C46489 /* AuthenticationViewModel.swift in Sources */,
 				7CC711FC27CD2C8A00708BBA /* UserCell.swift in Sources */,
@@ -556,6 +570,7 @@
 				7CD27CB927BFCA7E006182CA /* FeedController.swift in Sources */,
 				7CD27CB727BFC94C006182CA /* MainTabController.swift in Sources */,
 				7C50F1E727DCB1C3009FC1D9 /* inputTextView.swift in Sources */,
+				7CA8E17227ECD44400C4EB83 /* NotificationService.swift in Sources */,
 				7CAE54E927C4BB410062987E /* imageUploader.swift in Sources */,
 				7C50F1EE27E0D356009FC1D9 /* Post.swift in Sources */,
 				7CAE54EB27C4BB4D0062987E /* AuthService.swift in Sources */,
@@ -563,6 +578,7 @@
 				7CDB228E27C66E3E00E1E5FB /* UserProfileService.swift in Sources */,
 				7CDB228927C5351700E1E5FB /* ProfileCell.swift in Sources */,
 				7CD27C8227BFC886006182CA /* SceneDelegate.swift in Sources */,
+				7CA8E16E27EB812D00C4EB83 /* NotificationCell.swift in Sources */,
 				7C9C3D9427C13C36006DB357 /* RegistrationController.swift in Sources */,
 				7CCAE7C227E40B90008BC6BE /* CommentCell.swift in Sources */,
 			);
@@ -744,6 +760,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = J7WKHSZ8C5;
@@ -761,6 +778,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ronan.mak.InstaClone;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -772,6 +790,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = J7WKHSZ8C5;
@@ -789,6 +808,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ronan.mak.InstaClone;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

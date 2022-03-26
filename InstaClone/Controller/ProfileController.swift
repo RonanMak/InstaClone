@@ -74,7 +74,7 @@ class ProfileController: UICollectionViewController {
         collectionView.register(ProfileHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerIdentifier)
         
         let barAppearance = UINavigationBarAppearance()
-        barAppearance.backgroundColor = .white
+        barAppearance.backgroundColor = .lightGray
         //                        barAppearance.backgroundEffect = UIBlurEffect(style: .dark)
         navigationController?.navigationBar.scrollEdgeAppearance = barAppearance
         navigationController?.navigationBar.standardAppearance = barAppearance
@@ -146,6 +146,10 @@ extension ProfileController: UICollectionViewDelegateFlowLayout {
 
 extension ProfileController: ProfileHeaderDelegate {
     func header(_ profilerHeader: ProfileHeader, didTapActionButtonFor user: User) {
+        
+        guard let tab = self.tabBarController as? MainTabController else { return }
+        guard let currentUser = tab.user else { return }
+        
         if user.isCurrentUser {
             print("shiw edit profile")
         } else if user.isFollowed {
@@ -157,6 +161,8 @@ extension ProfileController: ProfileHeaderDelegate {
             UserProfileService.followUser(userID: user.userID) { error in
                 self.user.isFollowed = true
                 self.collectionView.reloadData()
+                
+                NotificationService.uploadNotification(toUserID: user.userID, fromUser: currentUser, type: .follow)
             }
         }
     }
