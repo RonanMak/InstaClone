@@ -156,6 +156,8 @@ extension ProfileController: ProfileHeaderDelegate {
             UserProfileService.unfollowUser(userID: user.userID) { error in
                 self.user.isFollowed = false
                 self.collectionView.reloadData()
+                
+                PostService.updateUserFeedAfterFollowing(user: user, didFollow: false)
             }
         } else {
             UserProfileService.followUser(userID: user.userID) { error in
@@ -163,6 +165,8 @@ extension ProfileController: ProfileHeaderDelegate {
                 self.collectionView.reloadData()
                 
                 NotificationService.uploadNotification(toUserID: user.userID, fromUser: currentUser, type: .follow)
+                
+                PostService.updateUserFeedAfterFollowing(user: user, didFollow: true)
             }
         }
     }

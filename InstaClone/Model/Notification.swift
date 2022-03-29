@@ -35,6 +35,7 @@ struct Notification {
     let notificationID: String
     let userProfileImageUrl: String
     let username: String
+    var userIsFollowed = false
     
     init(dictionary: [String: Any]) {
         self.userID = dictionary["userID"] as? String ?? ""
@@ -45,5 +46,6 @@ struct Notification {
         self.notificationID = dictionary["notificationID"] as? String ?? ""
         self.userProfileImageUrl = dictionary["userProfileImageUrl"] as? String ?? ""
         self.username = dictionary["username"] as? String ?? ""
+        
     }
 }

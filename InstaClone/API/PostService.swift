@@ -24,7 +24,9 @@ struct PostService {
                 "ownerImageUrl": user.profileImageUrl,
                 "ownerUsername": user.username] as [String : Any]
             
-            COLLECTION_POSTS.addDocument(data: data, completion: completion)
+            let docRef = COLLECTION_POSTS.addDocument(data: data, completion: completion)
+            
+            self.updateUserFeedAfterPost(postID: docRef.documentID)
         }
     }
     
@@ -64,6 +66,15 @@ struct PostService {
         }
     }
     
+    static func fetchPost(withPostID postID: String, completion: @escaping(Post) -> Void) {
+        COLLECTION_POSTS.document(postID).getDocument { snapshot, _ in
+            guard let snapshot = snapshot else { return }
+            guard let data = snapshot.data() else { return }
+            let post = Post(postID: snapshot.documentID, dictionary: data)
+            completion(post)
+        }
+    }
+    
     static func unlikePost(post: Post, completion: @escaping(FirestoreCompletion)) {
         guard let userID = Auth.auth().currentUser?.uid else { return }
         guard post.likes > 0 else { return }
@@ -81,6 +92,56 @@ struct PostService {
         COLLECTION_USERS.document(userID).collection("user-likes").document(post.postID).getDocument { (snapshot, _) in
             guard let didLike = snapshot?.exists else { return }
             completion(didLike)
+        }
+    }
+    
+    static func fetchFeedPosts(completion: @escaping([Post]) -> Void) {
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+        var posts = [Post]()
+        
+        COLLECTION_USERS.document(userID).collection("user-feed").getDocuments { snapshot, error in
+            snapshot?.documents.forEach({ document in
+                fetchPost(withPostID: document.documentID) { post in
+                    posts.append(post)
+                    completion(posts)
+                }
+            })
+        }
+    }
+    
+    static func updateUserFeedAfterFollowing(user: User, didFollow: Bool) {
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+        
+        let query = COLLECTION_POSTS.whereField("ownerUserID", isEqualTo: user.userID)
+        
+        query.getDocuments { (snapshot, errot) in
+            guard let documents = snapshot?.documents else { return }
+            
+            let documentIDs = documents.map({ $0.documentID })
+            
+            documentIDs.forEach { id in
+                
+                if didFollow {
+                    COLLECTION_USERS.document(userID).collection("user-feed").document(id).setData([:])
+                } else {
+                    COLLECTION_USERS.document(userID).collection("user-feed").document(id).delete()
+                }
+            }
+        }
+    }
+    
+    private static func updateUserFeedAfterPost(postID: String) {
+        guard let userID = Auth.auth().currentUser?.uid else { return }
+        
+        COLLECTION_FOLLOWERS.document(userID).collection("user-followers").getDocuments { snapshot, _ in
+            
+            guard let documents = snapshot?.documents else { return }
+            
+            documents.forEach { document in
+                COLLECTION_USERS.document(document.documentID).collection("user-feed").document(postID).setData([:])
+            }
+            
+            COLLECTION_USERS.document(userID).collection("user-feed").document(postID).setData([:])
         }
     }
 }
