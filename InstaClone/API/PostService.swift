@@ -61,10 +61,10 @@ struct PostService {
     
     static func fetchPosts(forHashtag hashtag: String, completion: @escaping([Post]) -> Void) {
         var posts = [Post]()
-        print("666", posts)
+
         COLLECTION_HASHTAGS.document(hashtag).collection("posts").getDocuments { snapshot, error in
             guard let documents = snapshot?.documents else { return }
-            print("888", posts)
+
             documents.forEach({ fetchPost(withPostId: $0.documentID) { post in
                 posts.append(post)
                 completion(posts)
@@ -106,14 +106,13 @@ struct PostService {
     static func fetchFeedPosts(completion: @escaping([Post]) -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         var posts = [Post]()
-        print("123", posts)
+
         COLLECTION_USERS.document(uid).collection("user-feed").getDocuments { snapshot, error in
-            print("999", snapshot?.documents)
+           
             snapshot?.documents.forEach({ document in
                 fetchPost(withPostId: document.documentID) { post in
                     posts.append(post)
-                    print("777", posts)
-//                    posts.sort(by: { $0.timestamp.seconds > $1.timestamp.seconds })
+                    posts.sort(by: { $0.timestamp.seconds > $1.timestamp.seconds })
                     completion(posts)
                 }
             })
