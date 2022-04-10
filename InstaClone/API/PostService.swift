@@ -23,7 +23,9 @@ struct PostService {
                         "ownerImageUrl": user.profileImageUrl,
                         "ownerUsername": user.username] as [String : Any]
                         
-            COLLECTION_POSTS.addDocument(data: data, completion: completion)
+            let docRef = COLLECTION_POSTS.addDocument(data: data, completion: completion)
+            
+            self.updateUserFeedAfterPost(postID: docRef.documentID)
         }
     }
     
