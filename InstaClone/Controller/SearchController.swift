@@ -28,7 +28,7 @@ enum UserFilterConfig: Equatable {
     }
 }
 
-protocol SearchControllerDelegate: class {
+protocol SearchControllerDelegate: AnyObject {
     func controller(_ controller: SearchController, wantsToStartChatWith user: User)
 }
 

@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol UploadPostControllerDelegate: class {
+protocol UploadPostControllerDelegate: AnyObject {
     func controllerDidFinishUploadingPost(_ controller: UploadPostController)
 }
 
