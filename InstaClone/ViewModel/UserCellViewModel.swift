@@ -5,10 +5,9 @@
 //  Created by Ronan Mak on 1/3/2022.
 //
 
-import UIKit
+import Foundation
 
 struct UserCellViewModel {
-    
     private let user: User
     
     var profileImageUrl: URL? {

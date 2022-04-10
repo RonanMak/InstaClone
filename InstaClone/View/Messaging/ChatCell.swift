@@ -4,7 +4,7 @@
 //
 //  Created by Ronan Mak on 9/4/2022.
 //
-//NEW
+
 import UIKit
 import Firebase
 
@@ -94,4 +94,3 @@ class MessageCell: UICollectionViewCell {
         profileImageView.sd_setImage(with: viewModel.profileImageUrl)
     }
 }
-

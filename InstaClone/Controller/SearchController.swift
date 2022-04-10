@@ -8,7 +8,7 @@
 import UIKit
 
 private let reuseIdentifier = "UserCell"
-private let postCellIdentifier = "ProfoleCell"
+private let postCellIdentifier = "PostCell"
 
 enum UserFilterConfig: Equatable {
     case followers(String)
@@ -28,47 +28,38 @@ enum UserFilterConfig: Equatable {
     }
 }
 
-protocol SearchControllerDelegate: AnyObject {
+protocol SearchControllerDelegate: class {
     func controller(_ controller: SearchController, wantsToStartChatWith user: User)
 }
 
-//class SearchController: UITableViewController {
-
-// cuz we're gonna be manually placing a tableView and collectionView into the viewController
-// instaed of making it a tableViewController that makes it harder to put a collectionView
-// onto the tableViewController than it is to put onto a viewController
 class SearchController: UIViewController {
-
+    
     // MARK: - Properties
     
     private let config: UserFilterConfig
-    
-    private let tableView = UITableView()
-    
     private var users = [User]()
-    
     weak var delegate: SearchControllerDelegate?
-    
+    private var filteredUsers = [User]()
+    private var posts = [Post]()
     private let searchController = UISearchController(searchResultsController: nil)
     
-    private var filteredUsers = [User]()
+    private lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.delegate = self
+        cv.dataSource = self
+        cv.alwaysBounceVertical = true
+        cv.backgroundColor = .white
+        cv.register(ProfileCell.self, forCellWithReuseIdentifier: postCellIdentifier)
+        return cv
+    }()
+    
+    private let tableView = UITableView()
     
     private var inSearchMode: Bool {
         return searchController.isActive && !searchController.searchBar.text!.isEmpty
     }
-    
-    // for collectionView
-    private var posts = [Post]()
-    
-    private lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.backgroundColor = .white
-        collectionView.register(ProfileCell.self, forCellWithReuseIdentifier: postCellIdentifier)
-        return collectionView
-    }()
     
     // MARK: - Lifecycle
     
@@ -91,13 +82,6 @@ class SearchController: UIViewController {
     
     // MARK: - API
     
-    func fetchUsers() {
-        UserProfileService.fetchUsers(completion: { users in
-            self.users = users
-            self.tableView.reloadData()
-        })
-    }
-    
     func fetchPosts() {
         PostService.fetchPosts { posts in
             self.posts = posts
@@ -105,11 +89,16 @@ class SearchController: UIViewController {
         }
     }
     
+    func fetchUsers() {
+        UserService.fetchUsers(forConfig: config) { users in
+            self.users = users
+            self.tableView.reloadData()
+        }
+    }
+    
     // MARK: - Helpers
     
     func configureUI() {
-        
-        //NEW
         view.backgroundColor = .white
         tableView.register(UserCell.self, forCellReuseIdentifier: reuseIdentifier)
         tableView.rowHeight = 64
@@ -139,22 +128,16 @@ class SearchController: UIViewController {
 
 // MARK: - UITableViewDataSource
 
-//extension SearchController {
-    // becuz we're not using this as a UITableViewController anymore, we're not inheriting from the UITableView, there are no override functions
-
 extension SearchController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return inSearchMode ? self.filteredUsers.count : self.users.count
+        return inSearchMode ? filteredUsers.count : users.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! UserCell
         
         let user = inSearchMode ? filteredUsers[indexPath.row] : users[indexPath.row]
-        
         cell.viewModel = UserCellViewModel(user: user)
-        
-        cell.backgroundColor = .white
         
         return cell
     }
@@ -164,7 +147,6 @@ extension SearchController: UITableViewDataSource {
 
 extension SearchController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //NEW
         if config == .messages {
             delegate?.controller(self, wantsToStartChatWith: users[indexPath.row])
         } else {
@@ -182,9 +164,9 @@ extension SearchController: UISearchResultsUpdating {
         guard let searchText = searchController.searchBar.text?.lowercased() else { return }
         
         filteredUsers = users.filter({
-            $0.username.lowercased().contains(searchText) || $0.fullname.lowercased().contains(searchText)
+            $0.username.contains(searchText) || $0.fullname.lowercased().contains(searchText)
         })
-
+        
         self.tableView.reloadData()
     }
 }
@@ -194,7 +176,7 @@ extension SearchController: UISearchResultsUpdating {
 extension SearchController: UISearchBarDelegate {
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         searchBar.showsCancelButton = true
-        //NEW
+        
         guard config == .all else { return }
         collectionView.isHidden = true
         tableView.isHidden = false
@@ -204,22 +186,12 @@ extension SearchController: UISearchBarDelegate {
         searchBar.endEditing(true)
         searchBar.showsCancelButton = false
         searchBar.text = nil
-        //NEW
+        
         tableView.reloadData()
         
         guard config == .all else { return }
         collectionView.isHidden = false
         tableView.isHidden = true
-    }
-}
-
-// MARK: - UICollectionViewDelegate
-
-extension SearchController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let controller = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
-        controller.post = posts[indexPath.row]
-        navigationController?.pushViewController(controller, animated: true)
     }
 }
 
@@ -233,15 +205,23 @@ extension SearchController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: postCellIdentifier, for: indexPath) as! ProfileCell
         cell.viewModel = PostViewModel(post: posts[indexPath.row])
-            
         return cell
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+
+extension SearchController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let controller = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
+        controller.post = posts[indexPath.row]
+        navigationController?.pushViewController(controller, animated: true)
     }
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
 
 extension SearchController: UICollectionViewDelegateFlowLayout {
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 1
     }
@@ -255,3 +235,4 @@ extension SearchController: UICollectionViewDelegateFlowLayout {
         return CGSize(width: width, height: width)
     }
 }
+

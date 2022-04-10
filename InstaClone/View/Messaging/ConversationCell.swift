@@ -84,4 +84,3 @@ class ConversationCell: UITableViewCell {
         profileImageView.sd_setImage(with: viewModel.profileImageUrl)
     }
 }
-

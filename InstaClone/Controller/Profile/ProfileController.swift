@@ -22,7 +22,6 @@ class ProfileController: UICollectionViewController {
     
     // MARK: - Lifecycle
     
-    // custom initialize. It's a dependency injection ->>>>>
     init(user: User) {
         self.user = user
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
@@ -31,41 +30,39 @@ class ProfileController: UICollectionViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    // the profile controller requires a user to populate everything that it has. the header and all the users post and stuff. It would make sense that we want to initialize this controller with a user object. So any time we want to instantiate this profileController, it's going to require that we passed in a user for it. Once the controller loads, it will already have this user and this is it up here.
-    //  ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureCollectionView()
         checkIfUserIsFollowed()
         fetchUserStats()
-        fetchUserPosts()
+        fetchPosts()
     }
     
     // MARK: - Actions
     
     @objc func handleRefresh() {
         posts.removeAll()
-        fetchUserPosts()
+        fetchPosts()
     }
     
     // MARK: - API
     
     func checkIfUserIsFollowed() {
-        UserProfileService.checkIfUserIsFollowed(userID: user.userID) { isFollowed in
+        UserService.checkIfUserIsFollowed(uid: user.uid) { isFollowed in
             self.user.isFollowed = isFollowed
         }
     }
     
     func fetchUserStats() {
-        UserProfileService.fetchUserStats(userID: user.userID) { stats in
+        UserService.fetchUserStats(uid: user.uid) { stats in
             self.user.stats = stats
             self.collectionView.reloadData()
         }
     }
     
-    func fetchUserPosts() {
-        PostService.fetchPosts(forUser: self.user.userID) { posts in
+    func fetchPosts() {
+        PostService.fetchPosts(forUser: user.uid) { posts in
             self.posts = posts
             self.collectionView.reloadData()
             self.collectionView.refreshControl?.endRefreshing()
@@ -78,17 +75,13 @@ class ProfileController: UICollectionViewController {
         navigationItem.title = user.username
         collectionView.backgroundColor = .white
         collectionView.register(ProfileCell.self, forCellWithReuseIdentifier: cellIdentifier)
-        collectionView.register(ProfileHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerIdentifier)
-        //NEW
+        collectionView.register(ProfileHeader.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: headerIdentifier)
+        
         let refresher = UIRefreshControl()
         refresher.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         collectionView.refreshControl = refresher
-        
-        let barAppearance = UINavigationBarAppearance()
-        barAppearance.backgroundColor = .lightGray
-        //                        barAppearance.backgroundEffect = UIBlurEffect(style: .dark)
-        navigationController?.navigationBar.scrollEdgeAppearance = barAppearance
-        navigationController?.navigationBar.standardAppearance = barAppearance
     }
     
     func showEditProfileController() {
@@ -104,21 +97,21 @@ class ProfileController: UICollectionViewController {
 
 extension ProfileController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.posts.count
+        return posts.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! ProfileCell
         cell.viewModel = PostViewModel(post: posts[indexPath.row])
-        
         return cell
     }
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+                
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerIdentifier, for: indexPath) as! ProfileHeader
-        
         header.delegate = self
-        header.viewModel = ProfileHeaderViewModel(user: self.user)
+        
+        header.viewModel = ProfileHeaderViewModel(user: user)
         
         return header
     }
@@ -137,7 +130,6 @@ extension ProfileController {
 // MARK: - UICollectionViewDelegateFlowLayout
 
 extension ProfileController: UICollectionViewDelegateFlowLayout {
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 1
     }
@@ -159,39 +151,36 @@ extension ProfileController: UICollectionViewDelegateFlowLayout {
 // MARK: - ProfileHeaderDelegate
 
 extension ProfileController: ProfileHeaderDelegate {
-    func header(_ profilerHeader: ProfileHeader, didTapActionButtonFor user: User) {
-        
-        guard let tab = self.tabBarController as? MainTabController else { return }
+    func header(_ profileHeader: ProfileHeader, didTapActionButtonFor user: User) {
+        guard let tab = tabBarController as? MainTabController else { return }
         guard let currentUser = tab.user else { return }
         
         if user.isCurrentUser {
             showEditProfileController()
         } else if user.isFollowed {
-            UserProfileService.unfollowUser(userID: user.userID) { error in
+            UserService.unfollow(uid: user.uid) { error in
                 self.user.isFollowed = false
-                self.collectionView.reloadData()
                 
-                PostService.updateUserFeedAfterFollowing(user: user, didFollow: false)
+                NotificationService.deleteNotification(toUid: user.uid, type: .follow)
             }
         } else {
-            UserProfileService.followUser(userID: user.userID) { error in
+            UserService.follow(uid: user.uid) { error in
                 self.user.isFollowed = true
-                self.collectionView.reloadData()
                 
-                NotificationService.uploadNotification(toUserID: user.userID, fromUser: currentUser, type: .follow)
-                
-                PostService.updateUserFeedAfterFollowing(user: user, didFollow: true)
+                NotificationService.uploadNotification(toUid: user.uid,
+                                                       fromUser: currentUser,
+                                                       type: .follow)
             }
         }
     }
     
     func header(_ profileHeader: ProfileHeader, wantsToViewFollowersFor user: User) {
-        let controller = SearchController(config: .followers(user.userID))
+        let controller = SearchController(config: .followers(user.uid))
         navigationController?.pushViewController(controller, animated: true)
     }
     
     func header(_ profileHeader: ProfileHeader, wantsToViewFollowingFor user: User) {
-        let controller = SearchController(config: .following(user.userID))
+        let controller = SearchController(config: .following(user.uid))
         navigationController?.pushViewController(controller, animated: true)
     }
 }

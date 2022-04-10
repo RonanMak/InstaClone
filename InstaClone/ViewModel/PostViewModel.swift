@@ -9,18 +9,17 @@ import UIKit
 import ActiveLabel
 
 struct PostViewModel {
-    
     var post: Post
     
     var imageUrl: URL? { return URL(string: post.imageUrl) }
     
-    var caption: String { return post.caption }
-    
-    var likes: Int { return post.likes }
-    
     var userProfileImageUrl: URL? { return URL(string: post.ownerImageUrl) }
     
     var username: String { return post.ownerUsername }
+    
+    var caption: String { return post.caption }
+    
+    var likes: Int { return post.likes }
     
     var likeButtonTintColor: UIColor {
         return post.didLike ? .red : .black
@@ -46,7 +45,7 @@ struct PostViewModel {
         formatter.unitsStyle = .full
         return formatter.string(from: post.timestamp.dateValue(), to: Date())
     }
-    //NEW
+    
     var customLabelType: ActiveType {
         return ActiveType.custom(pattern: "^\(username)\\b")
     }
@@ -76,7 +75,7 @@ struct PostViewModel {
             label.numberOfLines = 2
         }
     }
-    
+
     init(post: Post) {
         self.post = post
     }

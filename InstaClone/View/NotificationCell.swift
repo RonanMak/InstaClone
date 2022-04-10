@@ -7,10 +7,10 @@
 
 import UIKit
 
-protocol NotificationCellDelegate: AnyObject {
-    func cell(_ cell: NotificationCell, wantsToFollow userID: String)
-    func cell(_ cell: NotificationCell, wantsToUnfollow userID: String)
-    func cell(_ cell: NotificationCell, wantsToViewPost postID: String)
+protocol NotificationCellDelegate: class {
+    func cell(_ cell: NotificationCell, wantsToFollow uid: String)
+    func cell(_ cell: NotificationCell, wantsToUnfollow uid: String)
+    func cell(_ cell: NotificationCell, wantsToViewPost postId: String)
 }
 
 class NotificationCell: UITableViewCell {
@@ -24,37 +24,36 @@ class NotificationCell: UITableViewCell {
     weak var delegate: NotificationCellDelegate?
     
     private let profileImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.backgroundColor = .lightGray
-        //        imageView.image = #imageLiteral(resourceName: "nightView")
-        return imageView
+        let iv = UIImageView()
+        iv.contentMode = .scaleAspectFill
+        iv.clipsToBounds = true
+        iv.backgroundColor = .lightGray
+        return iv
     }()
     
     private let infoLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.textColor = .black
         label.numberOfLines = 0
         return label
     }()
     
-    private let postImageView: UIImageView = {
-       let imageView = UIImageView()
-        imageView.contentMode = .scaleToFill
-        imageView.clipsToBounds = true
-        imageView.backgroundColor = .lightGray
-        //NEW
-        let tap = UITapGestureRecognizer(target: self, action: #selector(handlePostTapped))
-        imageView.isUserInteractionEnabled = true
-        imageView.addGestureRecognizer(tap)
+    private lazy var postImageView: UIImageView = {
+        let iv = UIImageView()
+        iv.contentMode = .scaleAspectFill
+        iv.clipsToBounds = true
+        iv.backgroundColor = .lightGray
         
-        return imageView
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handlePostTapped))
+        iv.isUserInteractionEnabled = true
+        iv.addGestureRecognizer(tap)
+        
+        return iv
     }()
     
     private lazy var followButton: UIButton = {
         let button = UIButton(type: .system)
+        button.setTitle("Loading", for: .normal)
         button.layer.cornerRadius = 3
         button.layer.borderColor = UIColor.lightGray.cgColor
         button.layer.borderWidth = 0.5
@@ -77,14 +76,15 @@ class NotificationCell: UITableViewCell {
         
         contentView.addSubview(followButton)
         followButton.centerY(inView: self)
-        followButton.anchor(right: rightAnchor, paddingRight: 12, width: 84, height: 32)
+        followButton.anchor(right: rightAnchor, paddingRight: 12, width: 88, height: 32)
         
         contentView.addSubview(postImageView)
         postImageView.centerY(inView: self)
         postImageView.anchor(right: rightAnchor, paddingRight: 12, width: 40, height: 40)
         
         contentView.addSubview(infoLabel)
-        infoLabel.centerY(inView: profileImageView, leftAnchor: profileImageView.rightAnchor, paddingLeft: 8)
+        infoLabel.centerY(inView: profileImageView,
+                          leftAnchor: profileImageView.rightAnchor, paddingLeft: 8)
         infoLabel.anchor(right: followButton.leftAnchor, paddingRight: 4)
     }
     
@@ -98,25 +98,23 @@ class NotificationCell: UITableViewCell {
         guard let viewModel = viewModel else { return }
         
         if viewModel.notification.userIsFollowed {
-            delegate?.cell(self, wantsToUnfollow: viewModel.notification.userID)
+            delegate?.cell(self, wantsToUnfollow: viewModel.notification.uid)
         } else {
-            delegate?.cell(self, wantsToFollow: viewModel.notification.userID)
+            delegate?.cell(self, wantsToFollow: viewModel.notification.uid)
         }
     }
     
     @objc func handlePostTapped() {
-        guard let postID = viewModel?.notification.postID else { return }
-        delegate?.cell(self, wantsToViewPost: postID)
+        guard let postId = viewModel?.notification.postId else { return }
+        delegate?.cell(self, wantsToViewPost: postId)
     }
     
     // MARK: - Helpers
     
     func configure() {
-        guard let viewModel = viewModel else {
-            return
-        }
-
-        profileImageView.sd_setImage(with: viewModel.userProfileImageUrl)
+        guard let viewModel = viewModel else { return }
+        
+        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
         postImageView.sd_setImage(with: viewModel.postImageUrl)
         
         infoLabel.attributedText = viewModel.notificationMessage

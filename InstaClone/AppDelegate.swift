@@ -11,7 +11,7 @@ import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
+    
     let gcmMessageIDKey = NSUUID().uuidString
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -47,7 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
-    
+
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
       // If you are receiving a notification message while your app is in the background,
       // this callback will not be fired till the user taps on the notification launching the application.
@@ -93,11 +93,12 @@ extension AppDelegate: MessagingDelegate {
     }
     
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        guard let fcmToken = fcmToken else { return }
-        print("DEBUG: Registered with FCM Token: ", fcmToken)
+        guard let fcm = fcmToken else { return }
+        print("DEBUG: Registered with FCM Token: ", fcm)
     }
 }
 
+@available(iOS 10, *)
 extension AppDelegate : UNUserNotificationCenterDelegate {
 
   // Receive displayed notifications for iOS 10 devices.
@@ -139,4 +140,3 @@ extension AppDelegate : UNUserNotificationCenterDelegate {
     completionHandler()
   }
 }
-

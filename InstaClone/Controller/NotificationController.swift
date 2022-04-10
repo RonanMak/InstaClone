@@ -9,7 +9,7 @@ import UIKit
 
 private let reuseIdentifier = "NotificationCell"
 
-class NotificationController: UITableViewController {
+class NotificationsController: UITableViewController {
     
     // MARK: - Properties
     
@@ -17,33 +17,31 @@ class NotificationController: UITableViewController {
         didSet { tableView.reloadData() }
     }
     
-    private var refresher = UIRefreshControl()
+    private let refresher = UIRefreshControl()
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = .green
         configureTableView()
-        fetchNotification()
+        fetchNotifications()
     }
     
     // MARK: - API
-    func fetchNotification() {
+    
+    func fetchNotifications() {
         NotificationService.fetchNotifications { notifications in
             self.notifications = notifications
-            self.checkIfuserIsFollowed()
+            self.checkIfUserIsFollowed()
         }
     }
     
-    func checkIfuserIsFollowed() {
+    func checkIfUserIsFollowed() {
         notifications.forEach { notification in
-            
             guard notification.type == .follow else { return }
             
-            UserProfileService.checkIfUserIsFollowed(userID: notification.userID) { isFollowed in
-                if let index = self.notifications.firstIndex(where: { $0.userID == notification.userID }) {
+            UserService.checkIfUserIsFollowed(uid: notification.uid) { isFollowed in
+                if let index = self.notifications.firstIndex(where: { $0.id == notification.id }) {
                     self.notifications[index].userIsFollowed = isFollowed
                 }
             }
@@ -54,25 +52,15 @@ class NotificationController: UITableViewController {
     
     @objc func handleRefresh() {
         notifications.removeAll()
-        fetchNotification()
+        fetchNotifications()
         refresher.endRefreshing()
     }
     
     // MARK: - Helpers
     
     func configureTableView() {
-        
-        let barAppearance = UINavigationBarAppearance()
-        barAppearance.backgroundColor = .lightGray
-        barAppearance.titleTextAttributes = [.foregroundColor: UIColor.black]
-        
-        //                        barAppearance.backgroundEffect = UIBlurEffect(style: .dark)
-        navigationController?.navigationBar.scrollEdgeAppearance = barAppearance
-        navigationController?.navigationBar.standardAppearance = barAppearance
-        
         view.backgroundColor = .white
         navigationItem.title = "Notifications"
-        navigationItem.titleView?.tintColor = .black
         
         tableView.register(NotificationCell.self, forCellReuseIdentifier: reuseIdentifier)
         tableView.rowHeight = 80
@@ -85,30 +73,28 @@ class NotificationController: UITableViewController {
 
 // MARK: - UITableViewDataSource
 
-extension NotificationController {
+extension NotificationsController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return notifications.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! NotificationCell
-        cell.viewModel = NotificationViewModel(notification: notifications[indexPath.row])
         cell.delegate = self
-        cell.backgroundColor = .white
+        cell.viewModel = NotificationViewModel(notification: notifications[indexPath.row])
         return cell
     }
 }
 
 // MARK: - UITableViewDelegate
 
-extension NotificationController {
+extension NotificationsController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
         showLoader(true)
         
-        UserProfileService.fetchUser(withUserID: notifications[indexPath.row].userID) { user in
+        UserService.fetchUser(withUid: notifications[indexPath.row].uid) { user in
             self.showLoader(false)
-            
+
             let controller = ProfileController(user: user)
             self.navigationController?.pushViewController(controller, animated: true)
         }
@@ -117,29 +103,29 @@ extension NotificationController {
 
 // MARK: - NotificationCellDelegate
 
-extension NotificationController: NotificationCellDelegate {
-    func cell(_ cell: NotificationCell, wantsToFollow userID: String) {
+extension NotificationsController: NotificationCellDelegate {
+    func cell(_ cell: NotificationCell, wantsToFollow uid: String) {
         showLoader(true)
-        
-        UserProfileService.followUser(userID: userID) { _ in
+
+        UserService.follow(uid: uid) { _ in
             self.showLoader(false)
             cell.viewModel?.notification.userIsFollowed.toggle()
         }
     }
     
-    func cell(_ cell: NotificationCell, wantsToUnfollow userID: String) {
+    func cell(_ cell: NotificationCell, wantsToUnfollow uid: String) {
         showLoader(true)
-        
-        UserProfileService.unfollowUser(userID: userID) { _ in
+
+        UserService.unfollow(uid: uid) { _ in
             self.showLoader(false)
             cell.viewModel?.notification.userIsFollowed.toggle()
         }
     }
     
-    func cell(_ cell: NotificationCell, wantsToViewPost postID: String) {
+    func cell(_ cell: NotificationCell, wantsToViewPost postId: String) {
         showLoader(true)
-        
-        PostService.fetchPost(withPostID: postID) { post in
+
+        PostService.fetchPost(withPostId: postId) { post in
             self.showLoader(false)
             let controller = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
             controller.post = post

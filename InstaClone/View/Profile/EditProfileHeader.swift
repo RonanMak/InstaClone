@@ -65,4 +65,3 @@ class EditProfileHeader: UIView {
         delegate?.didTapChangeProfilePhoto()
     }
 }
-

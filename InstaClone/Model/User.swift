@@ -8,31 +8,26 @@
 import Foundation
 import Firebase
 
-// MARK: - Model for a user
-// mirror all of the properties that the database have.
-// including 1. email, 2. email, 3. fullname, 4. userID, 5. username
 struct User {
     let email: String
     var fullname: String
-    var username: String
-    let userID: String
     var profileImageUrl: String
-    //NEW
+    var username: String
+    let uid: String
     let fcmToken: String
     
     var isFollowed = false
     
     var stats: UserStats!
     
-    var isCurrentUser: Bool { return Auth.auth().currentUser?.uid == userID}
+    var isCurrentUser: Bool { return Auth.auth().currentUser?.uid == uid }
     
     init(dictionary: [String: Any]) {
         self.email = dictionary["email"] as? String ?? ""
         self.fullname = dictionary["fullname"] as? String ?? ""
-        self.username = dictionary["username"] as? String ?? ""
-        self.userID = dictionary["userID"] as? String ?? ""
         self.profileImageUrl = dictionary["profileImageUrl"] as? String ?? ""
-        //NEW
+        self.username = dictionary["username"] as? String ?? ""
+        self.uid = dictionary["uid"] as? String ?? ""
         self.fcmToken = dictionary["fcmToken"] as? String ?? ""
         
         self.stats = UserStats(followers: 0, following: 0, posts: 0)

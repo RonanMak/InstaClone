@@ -5,7 +5,6 @@
 //  Created by Ronan Mak on 24/2/2022.
 //
 
-import Foundation
 import UIKit
 
 struct ProfileHeaderViewModel {
@@ -21,8 +20,9 @@ struct ProfileHeaderViewModel {
     
     var followButtonText: String {
         if user.isCurrentUser {
-            return "Edit profile"
+            return "Edit Profile"
         }
+        
         return user.isFollowed ? "Following" : "Follow"
     }
     
@@ -34,7 +34,7 @@ struct ProfileHeaderViewModel {
         return user.isCurrentUser ? .black : .white
     }
     
-    var numberOfFollower: NSAttributedString {
+    var numberOfFollowers: NSAttributedString {
         return attributedStatText(value: user.stats.followers, label: "followers")
     }
     
@@ -51,8 +51,8 @@ struct ProfileHeaderViewModel {
     }
     
     func attributedStatText(value: Int, label: String) -> NSAttributedString {
-        let attributedLabel = NSMutableAttributedString(string: "\(value)\n" , attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
-        attributedLabel.append(NSAttributedString(string: label, attributes: [.font: UIFont.systemFont(ofSize: 14), .foregroundColor: UIColor.black]))
-        return attributedLabel
+        let attributedText = NSMutableAttributedString(string: "\(value)\n", attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
+        attributedText.append(NSAttributedString(string: label, attributes: [.font: UIFont.systemFont(ofSize: 14), .foregroundColor: UIColor.lightGray]))
+        return attributedText
     }
 }

@@ -7,12 +7,10 @@
 
 import UIKit
 
-// create a protocol in this file and then use a delegate once again to delegate action back to the combat controller so we can handle all that stuff
-
-protocol CustomInputAccesoryViewDelegate: AnyObject {
+protocol CustomInputAccesoryViewDelegate: class {
     func inputView(_ inputView: CustomInputAccesoryView, wantsToUploadText text: String)
 }
-//NEW
+
 enum InputViewConfiguration {
     case comments
     case messages
@@ -39,19 +37,19 @@ class CustomInputAccesoryView: UIView {
     weak var delegate: CustomInputAccesoryViewDelegate?
     
     private let config: InputViewConfiguration
-    
-    private let commentTextView: InputTextView = {
-       let textView = InputTextView()
-        textView.placeholderText = "Enter comment.."
-        textView.font = UIFont.systemFont(ofSize: 15)
-        textView.isScrollEnabled = false
-        textView.placeholderShouldCenter = true
-        return textView
+            
+    private lazy var commentTextView: InputTextView = {
+        let tv = InputTextView()
+        tv.placeholderText = config.placeholderText
+        tv.font = UIFont.systemFont(ofSize: 15)
+        tv.isScrollEnabled = false
+        tv.placeholderShouldCenter = true
+        return tv
     }()
     
-    private let postButton: UIButton = {
+    private lazy var postButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Post", for: .normal)
+        button.setTitle(config.actionButtonTitle, for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         button.addTarget(self, action: #selector(handlePostTapped), for: .touchUpInside)
@@ -64,23 +62,17 @@ class CustomInputAccesoryView: UIView {
         self.config = config
         super.init(frame: frame)
         
-        // important
-        autoresizingMask = .flexibleHeight
         backgroundColor = .white
+        autoresizingMask = .flexibleHeight
         
         addSubview(postButton)
         postButton.anchor(top: topAnchor, right: rightAnchor, paddingRight: 8)
         postButton.setDimensions(height: 50, width: 50)
         
         addSubview(commentTextView)
-        commentTextView.anchor(top: topAnchor,
-                               left: leftAnchor,
-                               bottom: safeAreaLayoutGuide.bottomAnchor,
-                               right: postButton.leftAnchor,
-                               paddingTop: 8,
-                               paddingLeft: 8,
-                               paddingBottom: 0,
-                               paddingRight: 8)
+        commentTextView.anchor(top: topAnchor, left: leftAnchor,
+                               bottom: safeAreaLayoutGuide.bottomAnchor, right: postButton.leftAnchor,
+                               paddingTop: 8, paddingLeft: 8, paddingBottom: 8, paddingRight: 8)
         
         let divider = UIView()
         divider.backgroundColor = .lightGray
@@ -92,7 +84,6 @@ class CustomInputAccesoryView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // this will figure out the size based on the view, the dimensions of the view components inside the view
     override var intrinsicContentSize: CGSize {
         return .zero
     }

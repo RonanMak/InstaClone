@@ -11,9 +11,7 @@ struct CommentViewModel {
     
     private let comment: Comment
     
-    var profileImageUrl: URL? {
-        return URL(string: comment.profileImageUrl)
-    }
+    var profileImageUrl: URL? { return URL(string: comment.profileImageUrl) }
     
     init(comment: Comment) {
         self.comment = comment
@@ -21,6 +19,7 @@ struct CommentViewModel {
     
     func commentLabelText() -> NSAttributedString {
         let attributedString = NSMutableAttributedString(string: "\(comment.username) ", attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
+        
         attributedString.append(NSAttributedString(string: comment.commentText, attributes: [.font: UIFont.systemFont(ofSize: 14)]))
         
         return attributedString
@@ -32,6 +31,6 @@ struct CommentViewModel {
         label.text = comment.commentText
         label.lineBreakMode = .byWordWrapping
         label.setWidth(width)
-        return label.systemLayoutSizeFitting(UIView.layoutFittingExpandedSize)
+        return label.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
     }
 }

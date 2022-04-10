@@ -9,7 +9,7 @@ import UIKit
 
 private let reuseIdentifier = "EditProfileCell"
 
-protocol EditProfileControllerDelegate: AnyObject {
+protocol EditProfileControllerDelegate: class {
     func controller(_ controller: EditProfileController, wantsToUpdate user: User)
 }
 
@@ -70,7 +70,7 @@ class EditProfileController: UITableViewController {
         
         if userInfoChanged && !imageChanged {
             showLoader(true)
-            UserProfileService.saveUserData(user: user) { _ in
+            UserService.saveUserData(user: user) { _ in
                 self.showLoader(false)
                 self.delegate?.controller(self, wantsToUpdate: self.user)
             }
@@ -78,7 +78,7 @@ class EditProfileController: UITableViewController {
         
         if userInfoChanged && imageChanged {
             showLoader(true)
-            UserProfileService.saveUserData(user: user) { _ in
+            UserService.saveUserData(user: user) { _ in
                 self.updateProfileImage()
             }
         }
@@ -88,7 +88,7 @@ class EditProfileController: UITableViewController {
         guard let image = selectedImage else { return }
         showLoader(true)
         
-        UserProfileService.updateProfileImage(forUser: user, image: image) { profileImageUrl, error in
+        UserService.updateProfileImage(forUser: user, image: image) { profileImageUrl, error in
             self.showLoader(false)
 
             if let error = error {
@@ -187,4 +187,5 @@ extension EditProfileController: EditProfileCellDelegate {
         }
     }
 }
+
 

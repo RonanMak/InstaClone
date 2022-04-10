@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SDWebImage
 
 class CommentCell: UICollectionViewCell {
     
@@ -17,18 +16,14 @@ class CommentCell: UICollectionViewCell {
     }
     
     private let profileImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.backgroundColor = .lightGray
-        return imageView
+        let iv = UIImageView()
+        iv.contentMode = .scaleAspectFill
+        iv.clipsToBounds = true
+        iv.backgroundColor = .lightGray
+        return iv
     }()
     
-    private let commentLabel: UILabel = {
-       let label = UILabel()
-        label.textColor = .black
-        return label
-    }()
+    private let commentLabel = UILabel()
     
     // MARK: - Lifecycle
     
@@ -41,11 +36,12 @@ class CommentCell: UICollectionViewCell {
         profileImageView.layer.cornerRadius = 40 / 2
         
         commentLabel.numberOfLines = 0
+        
         addSubview(commentLabel)
-        commentLabel.centerY(inView: profileImageView, leftAnchor: profileImageView.rightAnchor, paddingLeft: 8)
-        
+        commentLabel.centerY(inView: profileImageView,
+                             leftAnchor: profileImageView.rightAnchor,
+                             paddingLeft: 8)
         commentLabel.anchor(right: rightAnchor, paddingRight: 8)
-        
     }
     
     required init?(coder: NSCoder) {
@@ -55,10 +51,10 @@ class CommentCell: UICollectionViewCell {
     // MARK: - Helpers
     
     func configure() {
-        guard let viewModel = self.viewModel else { return }
+        guard let viewModel = viewModel else { return }
         
         profileImageView.sd_setImage(with: viewModel.profileImageUrl)
         commentLabel.attributedText = viewModel.commentLabelText()
+        
     }
 }
-

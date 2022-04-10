@@ -4,7 +4,7 @@
 //
 //  Created by Ronan Mak on 9/4/2022.
 //
-//NEW
+
 import UIKit
 import Firebase
 
@@ -111,7 +111,7 @@ extension ConversationsController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         showLoader(true)
         
-        UserProfileService.fetchUser(withUserID: conversations[indexPath.row].chatPartnerId) { user in
+        UserService.fetchUser(withUid: conversations[indexPath.row].chatPartnerId) { user in
             self.showLoader(false)
             self.showChatController(forUser: user)
         }
@@ -134,4 +134,3 @@ extension ConversationsController: SearchControllerDelegate {
         showChatController(forUser: user)
     }
 }
-

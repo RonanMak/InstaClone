@@ -73,4 +73,3 @@ class EditProfileCell: UITableViewCell {
         infoTextField.text = viewModel.optionValue
     }
 }
-

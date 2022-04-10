@@ -7,24 +7,18 @@
 
 import UIKit
 import Firebase
-import FirebaseFirestoreSwift
 
 typealias FirestoreCompletion = (Error?) -> Void
 
-struct UserProfileService {
-
-    // call this func once it's done doing its thing, and execute the completion handler, then give a user back.
-    static func fetchUser(withUserID userID: String, completion: @escaping(User) -> Void) {
-//        guard let userID = Auth.auth().currentUser?.uid else { return }
-        COLLECTION_USERS.document(userID).getDocument {
-            snapchot, error in
-           
-            guard let dictionary = snapchot?.data() else { return }
+struct UserService {
+    static func fetchUser(withUid uid: String, completion: @escaping(User) -> Void) {
+        COLLECTION_USERS.document(uid).getDocument { snapshot, error in
+            guard let dictionary = snapshot?.data() else { return }
             let user = User(dictionary: dictionary)
             completion(user)
         }
     }
-    //NEW
+    
     static func fetchUser(withUsername username: String, completion: @escaping(User?) -> Void) {
         COLLECTION_USERS.whereField("username", isEqualTo: username).getDocuments { snapshot, error in
             guard let document = snapshot?.documents.first else {
@@ -36,21 +30,19 @@ struct UserProfileService {
         }
     }
     
-    //NEW
     private static func fetchUsers(fromCollection collection: CollectionReference, completion: @escaping([User]) -> Void) {
         var users = [User]()
 
         collection.getDocuments { snapshot, _ in
             guard let documents = snapshot?.documents else { return }
             
-            documents.forEach({ fetchUser(withUserID: $0.documentID) { user in
+            documents.forEach({ fetchUser(withUid: $0.documentID) { user in
                 users.append(user)
                 completion(users)
             } })
         }
     }
     
-    //NEW
     static func fetchUsers(forConfig config: UserFilterConfig, completion: @escaping([User]) -> Void) {
         switch config {
         case .followers(let uid):
@@ -74,65 +66,47 @@ struct UserProfileService {
             }
         }
     }
-    
-    static func fetchUsers(completion: @escaping([User]) -> Void) {
-        COLLECTION_USERS.getDocuments { (snapshot, error) in
-            guard let snapshot = snapshot else { return }
-            
-            let users = snapshot.documents.map({ User(dictionary: $0.data()) })
-            completion(users)
+        
+    static func follow(uid: String, completion: @escaping(FirestoreCompletion)) {
+        guard let currentUid = Auth.auth().currentUser?.uid else { return }
+        COLLECTION_FOLLOWING.document(currentUid).collection("user-following").document(uid).setData([:]) { error in
+            COLLECTION_FOLLOWERS.document(uid).collection("user-followers").document(currentUid).setData([:], completion: completion)
         }
     }
     
-    static func followUser(userID: String, completion: @escaping(FirestoreCompletion)) {
-        guard let currentUserID = Auth.auth().currentUser?.uid else { return }
+    static func unfollow(uid: String, completion: @escaping(FirestoreCompletion)) {
+        guard let currentUid = Auth.auth().currentUser?.uid else { return }
         
-        COLLECTION_FOLLOWING.document(currentUserID).collection("user-following")
-            .document(userID).setData([:]) { error in COLLECTION_FOLLOWERS.document(userID).collection("user-followers")
-            .document(currentUserID).setData([:], completion: completion)
+        COLLECTION_FOLLOWING.document(currentUid).collection("user-following")
+            .document(uid).delete { error in
+                COLLECTION_FOLLOWERS.document(uid).collection("user-followers").document(currentUid).delete(completion: completion)
         }
     }
     
-    static func unfollowUser(userID: String, completion: @escaping(FirestoreCompletion)) {
-        guard let currentUserID = Auth.auth().currentUser?.uid else { return }
+    static func checkIfUserIsFollowed(uid: String, completion: @escaping(Bool) -> Void) {
+        guard let currentUid = Auth.auth().currentUser?.uid else { return }
         
-        COLLECTION_FOLLOWING.document(currentUserID).collection("user-following").document(userID).delete() {
-            error in COLLECTION_FOLLOWERS.document(userID).collection("user-followers").document(currentUserID).delete(completion: completion)
-        }        
-    }
-    
-    static func checkIfUserIsFollowed(userID: String, completion: @escaping(Bool) -> Void) {
-        guard let currentUserID = Auth.auth().currentUser?.uid else { return }
-        
-        COLLECTION_FOLLOWING.document(currentUserID).collection("user-following").document(userID).getDocument {
-            (snapshot, error) in
-            
+        COLLECTION_FOLLOWING.document(currentUid).collection("user-following").document(uid).getDocument { (snapshot, error) in
             guard let isFollowed = snapshot?.exists else { return }
             completion(isFollowed)
         }
     }
     
-    static func fetchUserStats(userID: String, completion: @escaping(UserStats) -> Void) {
-        COLLECTION_FOLLOWERS.document(userID).collection("user-followers").getDocuments { (snapshot, _) in
+    static func fetchUserStats(uid: String, completion: @escaping(UserStats) -> Void) {
+        COLLECTION_FOLLOWERS.document(uid).collection("user-followers").getDocuments { (snapshot, _) in
+            let followers = snapshot?.documents.count ?? 0
             
-            guard let followersNumber = snapshot?.documents.count else { return }
-            
-            COLLECTION_FOLLOWING.document(userID).collection("user-following").getDocuments { (snapshot, _) in
+            COLLECTION_FOLLOWING.document(uid).collection("user-following").getDocuments { (snapshot, _) in
+                let following = snapshot?.documents.count ?? 0
                 
-                guard let followingNumber = snapshot?.documents.count else { return }
-                
-                COLLECTION_POSTS.whereField("ownerUserID", isEqualTo: userID).getDocuments { (snapshot, _) in
-                    
-                    guard let postNumber = snapshot?.documents.count else { return }
-                    
-                    completion(UserStats(followers: followersNumber, following: followingNumber, posts: postNumber))
+                COLLECTION_POSTS.whereField("ownerUid", isEqualTo: uid).getDocuments { (snapshot, _) in
+                    let posts = snapshot?.documents.count ?? 0
+                    completion(UserStats(followers: followers, following: following, posts: posts))
                 }
-                
-
             }
         }
     }
-    // NEW
+    
     static func updateProfileImage(forUser user: User, image: UIImage, completion: @escaping(String?, Error?) -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
@@ -147,7 +121,7 @@ struct UserProfileService {
                     return
                 }
                 
-                COLLECTION_POSTS.whereField("ownerUid", isEqualTo: user.userID).getDocuments { snapshot, error in
+                COLLECTION_POSTS.whereField("ownerUid", isEqualTo: user.uid).getDocuments { snapshot, error in
                     guard let documents = snapshot?.documents else { return }
                     let data = ["ownerImageUrl": profileImageUrl]
                     documents.forEach({ COLLECTION_POSTS.document($0.documentID).updateData(data) })

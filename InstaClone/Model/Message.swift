@@ -4,7 +4,7 @@
 //
 //  Created by Ronan Mak on 9/4/2022.
 //
-//NEW
+
 import Firebase
 
 struct Message {
@@ -31,4 +31,3 @@ struct Message {
         }
     }
 }
-

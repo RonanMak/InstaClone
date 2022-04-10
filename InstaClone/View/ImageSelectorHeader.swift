@@ -4,7 +4,7 @@
 //
 //  Created by Ronan Mak on 9/4/2022.
 //
-//NEW
+
 import UIKit
 
 class ImageSelectorHeader: UICollectionViewCell {
@@ -28,3 +28,4 @@ class ImageSelectorHeader: UICollectionViewCell {
     }
     
 }
+

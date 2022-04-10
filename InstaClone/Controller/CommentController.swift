@@ -18,9 +18,9 @@ class CommentController: UICollectionViewController {
     
     private lazy var commentInputView: CustomInputAccesoryView = {
         let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
-        let commentView = CustomInputAccesoryView(config: .comments, frame: frame)
-        commentView.delegate = self
-        return commentView
+        let cv = CustomInputAccesoryView(config: .comments, frame: frame)
+        cv.delegate = self
+        return cv
     }()
     
     // MARK: - Lifecycle
@@ -48,10 +48,9 @@ class CommentController: UICollectionViewController {
         return true
     }
     
-    // viewWillAppear gets called every time the view is about to appear on screen
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.tabBarController?.tabBar.isHidden = true
+        tabBarController?.tabBar.isHidden = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -62,13 +61,13 @@ class CommentController: UICollectionViewController {
     // MARK: - API
     
     func fetchComments() {
-        CommentService.fetchComment(forPost: post.postID) { comments in
+        CommentService.fetchComments(forPost: post.postId) { comments in
             self.comments = comments
             self.collectionView.reloadData()
         }
     }
     
-    // MARK: - Helper
+    // MARK: - Helpers
     
     func configureCollectionView() {
         navigationItem.title = "Comments"
@@ -84,27 +83,13 @@ class CommentController: UICollectionViewController {
 
 extension CommentController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.comments.count
+        return comments.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! CommentCell
-        
         cell.viewModel = CommentViewModel(comment: comments[indexPath.row])
         return cell
-    }
-}
-
-// MARK: - UICollectionViewDelegateFlowLayout
-
-extension CommentController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        let viewModel = CommentViewModel(comment: comments[indexPath.row])
-        let height = viewModel.size(forWidth: view.frame.width).height + 32
-        
-        return CGSize(width: view.frame.width, height: height)
     }
 }
 
@@ -112,30 +97,40 @@ extension CommentController: UICollectionViewDelegateFlowLayout {
 
 extension CommentController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let userID = comments[indexPath.row].userID
-        
-        UserProfileService.fetchUser(withUserID: userID) { user in
+        let uid = comments[indexPath.row].uid
+        UserService.fetchUser(withUid: uid) { user in
             let controller = ProfileController(user: user)
             self.navigationController?.pushViewController(controller, animated: true)
         }
     }
 }
 
+// MARK: - UICollectionViewDelegateFlowLayout
+
+extension CommentController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let viewModel = CommentViewModel(comment: comments[indexPath.row])
+        let height = viewModel.size(forWidth: view.frame.width).height + 32
+        return CGSize(width: view.frame.width, height: height)
+    }
+}
+
 // MARK: - CommentInputAccesoryViewDelegate
 
 extension CommentController: CustomInputAccesoryViewDelegate {
-    func inputView(_ inputView: CustomInputAccesoryView, wantsToUploadText comment: String) {
-        
-        guard let tab = self.tabBarController as? MainTabController else { return }
+    func inputView(_ inputView: CustomInputAccesoryView, wantsToUploadText text: String) {
+        guard let tab = tabBarController as? MainTabController else { return }
         guard let currentUser = tab.user else { return }
         
-        self.showLoader(true)
-
-        CommentService.uploadComment(comment: comment, postID: post.postID, user: currentUser) { error in
+        showLoader(true)
+        
+        CommentService.uploadComment(comment: text, post: post, user: currentUser) { error in
             self.showLoader(false)
             inputView.clearInputText()
             
-            NotificationService.uploadNotification(toUserID: self.post.ownerUserID, fromUser: currentUser, type: .comment, post: self.post)
+            NotificationService.uploadNotification(toUid: self.post.ownerUid,
+                                                   fromUser: currentUser, type: .comment,
+                                                   post: self.post)
         }
     }
 }
