@@ -60,9 +60,12 @@ class FeedController: UICollectionViewController {
     // MARK: - API
     
     func fetchPosts() {
+        print("okkkk")
         guard post == nil else { return }
-        
+        print("okkkk123")
         PostService.fetchFeedPosts { posts in
+            print("okkkk321")
+            print("ok", posts)
             self.posts = posts
             self.checkIfUserLikedPosts()
             self.collectionView.refreshControl?.endRefreshing()

@@ -98,7 +98,6 @@ extension AppDelegate: MessagingDelegate {
     }
 }
 
-@available(iOS 10, *)
 extension AppDelegate : UNUserNotificationCenterDelegate {
 
   // Receive displayed notifications for iOS 10 devices.
