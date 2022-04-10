@@ -10,8 +10,9 @@ import SDWebImage
 
 protocol ProfileHeaderDelegate: AnyObject {
     func header(_ profilerHeader: ProfileHeader, didTapActionButtonFor user: User)
-//    func header(_ profilerHeader: ProfileHeader, wantsToUnfollow userID: String)
-//    func headerWantsToShowEditProfile(_ profilerHeader: ProfileHeader)
+//NEW
+    func header(_ profileHeader: ProfileHeader, wantsToViewFollowersFor user: User)
+    func header(_ profileHeader: ProfileHeader, wantsToViewFollowingFor user: User)
 }
 
 class ProfileHeader: UICollectionReusableView {
@@ -67,6 +68,11 @@ class ProfileHeader: UICollectionReusableView {
         label.numberOfLines = 0
         label.textAlignment = .center
         label.textColor = .black
+        //NEW
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleFollowersTapped))
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(tap)
+        
         return label
     }()
     
@@ -75,6 +81,11 @@ class ProfileHeader: UICollectionReusableView {
         label.numberOfLines = 0
         label.textAlignment = .center
         label.textColor = .black
+        //NEW
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleFollowingTapped))
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(tap)
+
         return label
     }()
     
@@ -119,6 +130,10 @@ class ProfileHeader: UICollectionReusableView {
         editProfileFollowButton.anchor(top:nameLabel.bottomAnchor, left: leftAnchor, right: rightAnchor, paddingTop: 16, paddingLeft: 14, paddingRight: 14)
         
         let stack = UIStackView(arrangedSubviews: [postLabel, followersLabel, followingLabel])
+        
+        //NEW
+        stack.distribution = .fillEqually
+        
         addSubview(stack)
         stack.centerY(inView: profileImageView)
         stack.anchor(left: profileImageView.rightAnchor, right: rightAnchor, paddingLeft: 12, paddingRight: 12, height: 50)
@@ -138,6 +153,10 @@ class ProfileHeader: UICollectionReusableView {
         
         buttonStack.anchor(left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingBottom: 10, height: 30)
         
+        topDivider.anchor(top: buttonStack.topAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
+        
+        bottomDivider.anchor(top: buttonStack.bottomAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
+        
 //        topDivider.anchor(top: buttonStack.topAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
 //
 //        bottomDivider.anchor(top: buttonStack.bottomAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
@@ -155,6 +174,17 @@ class ProfileHeader: UICollectionReusableView {
         delegate?.header(self, didTapActionButtonFor: viewModel.user)
     }
     
+    //NEW
+    @objc func handleFollowersTapped() {
+        guard let viewModel = viewModel else { return }
+        delegate?.header(self, wantsToViewFollowersFor: viewModel.user)
+    }
+    
+    @objc func handleFollowingTapped() {
+        guard let viewModel = viewModel else { return }
+        delegate?.header(self, wantsToViewFollowingFor: viewModel.user)
+    }
+    
     // MARK: - Helpers
     
     func configure() {
@@ -167,10 +197,9 @@ class ProfileHeader: UICollectionReusableView {
         editProfileFollowButton.setTitleColor(viewModel.followButtonTextColor, for: .normal)
         editProfileFollowButton.backgroundColor = viewModel.followButtonBackgroundColor
         
-        postLabel.attributedText = viewModel.numberOfPost
+        postLabel.attributedText = viewModel.numberOfPosts
         followersLabel.attributedText = viewModel.numberOfFollower
         followingLabel.attributedText = viewModel.numberOfFollowing
-        postLabel.attributedText = viewModel.numberOfPost
     }
     
     

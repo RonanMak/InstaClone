@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ActiveLabel
 
 // we need to hop into feed cell class and add a function to this protocol to delegate action from the cell to the controller to handle liking the post
 
@@ -13,6 +14,8 @@ protocol FeedCellDelegate: AnyObject {
     func cell(_ cell: FeedCell, wantsToShowCommentsFor post: Post)
     func cell(_ cell: FeedCell, didLike post: Post)
     func didTapIconButton(_ cell: FeedCell, wantsToShowProfileFor ownerID: String)
+    func cell(_ cell: FeedCell, wantsToViewLikesFor postId: String)
+    func cell(_ cell: FeedCell, wantsToShowOptionsForPost post: Post)
 }
 
 class FeedCell: UICollectionViewCell {
@@ -41,9 +44,16 @@ class FeedCell: UICollectionViewCell {
     private lazy var usernameButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitleColor(.black, for: .normal)
-//        button.setTitle("RONAN", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 13)
         button.addTarget(self, action: #selector(showUserProfile), for: .touchUpInside)
+        return button
+    }()
+    //NEW
+    private lazy var optionsButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+        button.tintColor = .black
+        button.addTarget(self, action: #selector(showOptions), for: .touchUpInside)
         return button
     }()
     
@@ -80,15 +90,20 @@ class FeedCell: UICollectionViewCell {
         return button
     }()
     
-    private let likesLabel: UILabel = {
+    private lazy var likesLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 13)
+        //NEW
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleLikesTapped))
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(tap)
+        
         label.textColor = .black
         return label
     }()
     
-    private let captionLabel: UILabel = {
-        let label = UILabel()
+    let captionLabel: ActiveLabel = {
+        let label = ActiveLabel()
         label.font = UIFont.boldSystemFont(ofSize: 14)
         label.textColor = .black
         return label
@@ -115,6 +130,10 @@ class FeedCell: UICollectionViewCell {
         
         addSubview(usernameButton)
         usernameButton.centerY(inView: profileImageView, leftAnchor: profileImageView.rightAnchor, paddingLeft: 8)
+        //NEW
+        addSubview(optionsButton)
+        optionsButton.centerY(inView: profileImageView)
+        optionsButton.anchor(right: rightAnchor, paddingRight: 12)
         
         addSubview(postImageView)
         postImageView.anchor(top: profileImageView.bottomAnchor, left:  leftAnchor, right:  rightAnchor, paddingTop: 8)
@@ -152,21 +171,35 @@ class FeedCell: UICollectionViewCell {
         guard let viewModel = viewModel else { return }
         delegate?.cell(self, didLike: viewModel.post)
     }
+    //NEW
+    @objc func showOptions() {
+        guard let viewModel = viewModel else { return }
+        delegate?.cell(self, wantsToShowOptionsForPost: viewModel.post)
+    }
+    
+    @objc func handleLikesTapped() {
+        guard let viewModel = viewModel else { return }
+        delegate?.cell(self, wantsToViewLikesFor: viewModel.post.postID)
+    }
     
     // MARK: - Helpers
     
     func configure() {
         guard let viewModel = viewModel else { return }
+        //NEW
+        captionLabel.configureLinkAttribute = viewModel.configureLinkAttribute
+        captionLabel.enabledTypes = viewModel.enabledTypes
+        viewModel.customizeLabel(captionLabel)
         
-        captionLabel.text = viewModel.caption
         postImageView.sd_setImage(with: viewModel.imageUrl)
-        
         profileImageView.sd_setImage(with: viewModel.userProfileImageUrl)
         usernameButton.setTitle(viewModel.username, for: .normal)
         
         likesLabel.text = viewModel.likesLabelText
         likeButton.tintColor = viewModel.likeButtonTintColor
         likeButton.setImage(viewModel.likeButtonImage, for: .normal)
+        
+        postTimeLabel.text = viewModel.timestampString
     }
     
     func configureActionButtons() {

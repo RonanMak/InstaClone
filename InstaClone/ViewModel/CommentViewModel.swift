@@ -15,10 +15,6 @@ struct CommentViewModel {
         return URL(string: comment.profileImageUrl)
     }
     
-//    var usernane: String { return comment.username }
-//
-//    var commentText: String { return comment.commentText }
-    
     init(comment: Comment) {
         self.comment = comment
     }

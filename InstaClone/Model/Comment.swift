@@ -14,6 +14,8 @@ struct Comment {
     let profileImageUrl: String
     let commentText: String
     let timestamp: Timestamp
+    //NEW
+    let postOwnerUid: String
     
     init(dictionary: [String: Any]) {
         self.userID = dictionary["userID"] as? String ?? ""
@@ -21,5 +23,6 @@ struct Comment {
         self.profileImageUrl = dictionary["profileImageUrl"] as? String ?? ""
         self.commentText = dictionary["comment"] as? String ?? ""
         self.timestamp = dictionary["timestamp"] as? Timestamp ?? Timestamp(date: Date())
+        self.postOwnerUid = dictionary["postOwnerUid"] as? String ?? ""
     }
 }

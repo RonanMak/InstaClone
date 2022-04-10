@@ -27,7 +27,6 @@ class NotificationCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.isUserInteractionEnabled = true
         imageView.backgroundColor = .lightGray
         //        imageView.image = #imageLiteral(resourceName: "nightView")
         return imageView
@@ -46,10 +45,11 @@ class NotificationCell: UITableViewCell {
         imageView.contentMode = .scaleToFill
         imageView.clipsToBounds = true
         imageView.backgroundColor = .lightGray
+        //NEW
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handlePostTapped))
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(tap)
         
-//        let tap = UITapGestureRecognizer(target: self, action: #selector(handlePostTapped))
-//        imageView.isUserInteractionEnabled = true
-//        imageView.addGestureRecognizer(tap)
         return imageView
     }()
     
@@ -86,8 +86,6 @@ class NotificationCell: UITableViewCell {
         contentView.addSubview(infoLabel)
         infoLabel.centerY(inView: profileImageView, leftAnchor: profileImageView.rightAnchor, paddingLeft: 8)
         infoLabel.anchor(right: followButton.leftAnchor, paddingRight: 4)
-        
-        followButton.isHidden = true
     }
     
     required init?(coder: NSCoder) {
@@ -109,8 +107,6 @@ class NotificationCell: UITableViewCell {
     @objc func handlePostTapped() {
         guard let postID = viewModel?.notification.postID else { return }
         delegate?.cell(self, wantsToViewPost: postID)
-        
-        print("hihihi")
     }
     
     // MARK: - Helpers

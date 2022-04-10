@@ -16,6 +16,11 @@ class ProfileCell: UICollectionViewCell {
         didSet { configure() }
     }
     
+    //NEW
+    var photoImageView: UIImage? {
+        didSet { postImageView.image = photoImageView }
+    }
+    
     private let postImageView: UIImageView = {
        let imageView = UIImageView()
         imageView.image = UIImage(named: "NewYork")

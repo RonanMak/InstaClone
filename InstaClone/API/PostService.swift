@@ -75,6 +75,19 @@ struct PostService {
         }
     }
     
+    //NEW
+    static func fetchPosts(forHashtag hashtag: String, completion: @escaping([Post]) -> Void) {
+        var posts = [Post]()
+        COLLECTION_HASHTAGS.document(hashtag).collection("posts").getDocuments { snapshot, error in
+            guard let documents = snapshot?.documents else { return }
+            
+            documents.forEach({ fetchPost(withPostID: $0.documentID) { post in
+                posts.append(post)
+                completion(posts)
+            } })
+        }
+    }
+    
     static func unlikePost(post: Post, completion: @escaping(FirestoreCompletion)) {
         guard let userID = Auth.auth().currentUser?.uid else { return }
         guard post.likes > 0 else { return }
@@ -103,9 +116,38 @@ struct PostService {
             snapshot?.documents.forEach({ document in
                 fetchPost(withPostID: document.documentID) { post in
                     posts.append(post)
+                    
+                    posts.sort { (post1, post2) -> Bool in
+                        return post1.timestamp.seconds > post2.timestamp.seconds
+                    }
+                    
                     completion(posts)
                 }
             })
+        }
+    }
+    
+    //NEW
+    static func deletePost(_ postId: String, completion: @escaping(FirestoreCompletion)) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+        COLLECTION_POSTS.document(postId).collection("post-likes").getDocuments { snapshot, _ in
+            guard let uids = snapshot?.documents.map({ $0.documentID }) else { return }
+            uids.forEach({ COLLECTION_USERS.document($0).collection("user-likes").document(postId).delete() })
+        }
+        
+        COLLECTION_POSTS.document(postId).delete { _ in
+            COLLECTION_FOLLOWERS.document(uid).collection("user-followers").getDocuments { snapshot, _ in
+                guard let uids = snapshot?.documents.map({ $0.documentID }) else { return }
+                
+                uids.forEach({ COLLECTION_USERS.document($0).collection("user-feed").document(postId).delete() })
+                
+                let notificationQuery = COLLECTION_NOTIFICATIONS.document(uid).collection("user-notifications")
+                notificationQuery.whereField("postId", isEqualTo: postId).getDocuments { snapshot, _ in
+                    guard let documents = snapshot?.documents else { return }
+                    documents.forEach({ $0.reference.delete(completion: completion) })
+                }
+            }
         }
     }
     

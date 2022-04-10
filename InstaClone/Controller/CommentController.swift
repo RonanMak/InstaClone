@@ -16,9 +16,9 @@ class CommentController: UICollectionViewController {
     private let post: Post
     private var comments = [Comment]()
     
-    private lazy var commentInputView: CommentInputAccesoryView = {
+    private lazy var commentInputView: CustomInputAccesoryView = {
         let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
-        let commentView = CommentInputAccesoryView(frame: frame)
+        let commentView = CustomInputAccesoryView(config: .comments, frame: frame)
         commentView.delegate = self
         return commentView
     }()
@@ -50,13 +50,11 @@ class CommentController: UICollectionViewController {
     
     // viewWillAppear gets called every time the view is about to appear on screen
     override func viewWillAppear(_ animated: Bool) {
-        print("willapear")
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        print("willdisapear")
         super.viewWillDisappear(animated)
         tabBarController?.tabBar.isHidden = false
     }
@@ -125,8 +123,8 @@ extension CommentController {
 
 // MARK: - CommentInputAccesoryViewDelegate
 
-extension CommentController: CommentInputAccesoryViewDelegate {
-    func inputView(_ inputView: CommentInputAccesoryView, wantsToUploadComment comment: String) {
+extension CommentController: CustomInputAccesoryViewDelegate {
+    func inputView(_ inputView: CustomInputAccesoryView, wantsToUploadText comment: String) {
         
         guard let tab = self.tabBarController as? MainTabController else { return }
         guard let currentUser = tab.user else { return }
@@ -135,7 +133,7 @@ extension CommentController: CommentInputAccesoryViewDelegate {
 
         CommentService.uploadComment(comment: comment, postID: post.postID, user: currentUser) { error in
             self.showLoader(false)
-            inputView.clearCommentTextView()
+            inputView.clearInputText()
             
             NotificationService.uploadNotification(toUserID: self.post.ownerUserID, fromUser: currentUser, type: .comment, post: self.post)
         }

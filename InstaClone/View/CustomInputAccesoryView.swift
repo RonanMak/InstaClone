@@ -9,15 +9,36 @@ import UIKit
 
 // create a protocol in this file and then use a delegate once again to delegate action back to the combat controller so we can handle all that stuff
 
-protocol CommentInputAccesoryViewDelegate: AnyObject {
-    func inputView( _ inputView: CommentInputAccesoryView, wantsToUploadComment comment: String)
+protocol CustomInputAccesoryViewDelegate: AnyObject {
+    func inputView(_ inputView: CustomInputAccesoryView, wantsToUploadText text: String)
+}
+//NEW
+enum InputViewConfiguration {
+    case comments
+    case messages
+    
+    var placeholderText: String {
+        switch self {
+        case .comments: return "Comment..."
+        case .messages: return "Message..."
+        }
+    }
+    
+    var actionButtonTitle: String {
+        switch self {
+        case .comments: return "Post"
+        case .messages: return "Send"
+        }
+    }
 }
 
-class CommentInputAccesoryView: UIView {
+class CustomInputAccesoryView: UIView {
     
     // MARK: - Properties
     
-    weak var delegate: CommentInputAccesoryViewDelegate?
+    weak var delegate: CustomInputAccesoryViewDelegate?
+    
+    private let config: InputViewConfiguration
     
     private let commentTextView: InputTextView = {
        let textView = InputTextView()
@@ -39,7 +60,8 @@ class CommentInputAccesoryView: UIView {
     
     // MARK: - Lifecycle
     
-    override init(frame: CGRect) {
+    init(config: InputViewConfiguration, frame: CGRect) {
+        self.config = config
         super.init(frame: frame)
         
         // important
@@ -78,12 +100,12 @@ class CommentInputAccesoryView: UIView {
     // MARK: - Actions
     
     @objc func handlePostTapped() {
-        delegate?.inputView(self, wantsToUploadComment: commentTextView.text)
+        delegate?.inputView(self, wantsToUploadText: commentTextView.text)
     }
     
     // MARK: - Helpers
     
-    func clearCommentTextView() {
+    func clearInputText() {
         commentTextView.text = nil
         commentTextView.placeholderLabel.isHidden = false
     }

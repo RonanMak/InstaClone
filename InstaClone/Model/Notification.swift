@@ -46,6 +46,5 @@ struct Notification {
         self.notificationID = dictionary["notificationID"] as? String ?? ""
         self.userProfileImageUrl = dictionary["userProfileImageUrl"] as? String ?? ""
         self.username = dictionary["username"] as? String ?? ""
-        
     }
 }

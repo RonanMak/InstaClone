@@ -13,10 +13,12 @@ import Firebase
 // including 1. email, 2. email, 3. fullname, 4. userID, 5. username
 struct User {
     let email: String
-    let fullname: String
-    let username: String
+    var fullname: String
+    var username: String
     let userID: String
-    let profileImageUrl: String
+    var profileImageUrl: String
+    //NEW
+    let fcmToken: String
     
     var isFollowed = false
     
@@ -30,6 +32,8 @@ struct User {
         self.username = dictionary["username"] as? String ?? ""
         self.userID = dictionary["userID"] as? String ?? ""
         self.profileImageUrl = dictionary["profileImageUrl"] as? String ?? ""
+        //NEW
+        self.fcmToken = dictionary["fcmToken"] as? String ?? ""
         
         self.stats = UserStats(followers: 0, following: 0, posts: 0)
     }

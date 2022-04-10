@@ -18,6 +18,8 @@ struct Post {
     let ownerImageUrl: String
     let ownerUsername: String
     var didLike = false
+    //NEW
+    let hashtags: [String]
     
     init(postID: String, dictionary: [String: Any]) {
         self.caption = dictionary["caption"] as? String ?? ""
@@ -28,5 +30,7 @@ struct Post {
         self.postID = postID
         self.ownerImageUrl = dictionary["ownerImageUrl"] as? String ?? ""
         self.ownerUsername = dictionary["ownerUsername"] as? String ?? ""
+        //NEW
+        self.hashtags = dictionary["hashtags"] as? [String] ?? [String]()
     } 
 }

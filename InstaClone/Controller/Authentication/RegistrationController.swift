@@ -36,18 +36,6 @@ class RegistrationController: UIViewController {
         return textField
     }()
     
-    //    private let fullnameTextField: UITextField = {
-    //        let textField = CustomTextField("Fullname")
-    //        textField.keyboardType = .emailAddress
-    //        return textField
-    //    }()
-    //
-    //    private let usernameTextField: UITextField = {
-    //        let textField = CustomTextField("Username")
-    //        textField.keyboardType = .emailAddress
-    //        return textField
-    //    }()
-    
     private let fullnameTextField = CustomTextField("Fullname")
     private let usernameTextField = CustomTextField("Username")
     
@@ -94,7 +82,6 @@ class RegistrationController: UIViewController {
         
         let credentials = AuthCredentials(email: email, password: password, username: username, fullname: fullname, profileImage: profileImage)
         
-        print(credentials)
         AuthService.registerUser(withCredential: credentials) { error in
             if let error = error {
                 print("DEBUG: filed to register user \(error.localizedDescription)")
@@ -186,7 +173,9 @@ extension RegistrationController: UIImagePickerControllerDelegate, UINavigationC
         
         guard let selectedImage = info[.editedImage] as? UIImage else { return }
         profileImage = selectedImage
-        
+        //NEW
+        plusPhotoButton.contentMode = .scaleAspectFill
+        plusPhotoButton.clipsToBounds = true
         plusPhotoButton.layer.cornerRadius = plusPhotoButton.frame.width / 2
         plusPhotoButton.layer.masksToBounds = true
         plusPhotoButton.layer.borderColor = UIColor.white.cgColor

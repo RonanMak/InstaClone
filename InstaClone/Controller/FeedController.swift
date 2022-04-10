@@ -18,7 +18,9 @@ class FeedController: UICollectionViewController {
         didSet { collectionView.reloadData() }
     }
     
-    var post: Post?
+    var post: Post? {
+        didSet { collectionView.reloadData() }
+    }
     
     // MARK: - Lifecycle
     
@@ -26,6 +28,10 @@ class FeedController: UICollectionViewController {
         super.viewDidLoad()
         configureUI()
         fetchPosts()
+        
+        if post != nil {
+            checkIfUserLikedPosts()
+        }
     }
     
     // MARK: - Actions
@@ -33,6 +39,11 @@ class FeedController: UICollectionViewController {
     @objc func handleRefresh() {
         posts.removeAll()
         fetchPosts()
+    }
+    //NEW
+    @objc func showMessages() {
+        let controller = ConversationsController()
+        navigationController?.pushViewController(controller, animated: true)
     }
     
     @objc func handleLogout() {
@@ -65,12 +76,27 @@ class FeedController: UICollectionViewController {
     }
     
     func checkIfUserLikedPosts() {
-        self.posts.forEach { post in
+        if let post = post {
             PostService.checkIfUserLikedPost(post: post) { didLike in
-                if let index = self.posts.firstIndex(where: { $0.postID == post.postID }) {
-                    self.posts[index].didLike = didLike
+                self.post?.didLike = didLike
+            }
+        } else {
+            posts.forEach { post in
+                PostService.checkIfUserLikedPost(post: post) { didLike in
+                    if let index = self.posts.firstIndex(where: { $0.postID == post.postID }) {
+                        self.posts[index].didLike = didLike
+                    }
                 }
             }
+        }
+    }
+    
+    func deletePost(_ post: Post) {
+        self.showLoader(true)
+        
+        PostService.deletePost(post.postID) { _ in
+            self.showLoader(false)
+            self.handleRefresh()
         }
     }
     
@@ -105,6 +131,12 @@ class FeedController: UICollectionViewController {
                 style: .plain,
                 target: self,
                 action: #selector(handleLogout))
+            //NEW
+            navigationItem.rightBarButtonItem = UIBarButtonItem(
+                image: #imageLiteral(resourceName: "send2"),
+                style: .plain,
+                target: self,
+                action: #selector(showMessages))
         }
     }
 }
@@ -128,17 +160,9 @@ extension FeedController {
                 cell.viewModel = PostViewModel(post: posts[indexPath.row])
             }
         }
+        
         return cell
     }
-    
-    //    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    //        guard let userID = self.post?.ownerUserID else { return }
-    //
-    //        UserProfileService.fetchUser(withUserID: userID) { user in
-    //            let controller = ProfileController(user: user)
-    //            self.navigationController?.pushViewController(controller, animated: true)
-    //        }
-    //    }
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
@@ -157,11 +181,61 @@ extension FeedController: UICollectionViewDelegateFlowLayout {
 // MARK: - FeedCellDelegate
 
 extension FeedController: FeedCellDelegate {
+    //NEW
+    func cell(_ cell: FeedCell, wantsToViewLikesFor postId: String) {
+        let controller = SearchController(config: .likes(postId))
+        navigationController?.pushViewController(controller, animated: true)
+    }
+    
     func didTapIconButton(_ cell: FeedCell, wantsToShowProfileFor ownerID: String) {
         UserProfileService.fetchUser(withUserID: ownerID) { user in
             let controller = ProfileController(user: user)
             self.navigationController?.pushViewController(controller, animated: true)
         }
+    }
+    //NEW
+    func cell(_ cell: FeedCell, wantsToShowOptionsForPost post: Post) {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let editPostAction = UIAlertAction(title: "Edit Post", style: .default) { _ in
+            print("DEBUG: Edit post")
+        }
+        
+        let deletePostAction = UIAlertAction(title: "Delete Post", style: .destructive) { _ in
+            self.deletePost(post)
+        }
+        
+        let unfollowAction = UIAlertAction(title: "Unfollow", style: .default) { _ in
+            self.showLoader(true)
+            UserProfileService.unfollowUser(userID: post.ownerUserID) { _ in
+                self.showLoader(false)
+            }
+        }
+        
+        let followAction = UIAlertAction(title: "Follow", style: .default) { _ in
+            self.showLoader(true)
+            UserProfileService.followUser(userID: post.ownerUserID) { _ in
+                self.showLoader(false)
+            }
+        }
+        
+        let cancelAction =  UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        if post.ownerUserID == Auth.auth().currentUser?.uid {
+            alert.addAction(editPostAction)
+            alert.addAction(deletePostAction)
+        } else {
+            UserProfileService.checkIfUserIsFollowed(userID: post.ownerUserID) { isFollowed in
+                if isFollowed {
+                    alert.addAction(unfollowAction)
+                } else {
+                    alert.addAction(followAction)
+                }
+            }
+        }
+        
+        alert.addAction(cancelAction)
+        present(alert, animated: true, completion: nil)
     }
     
     func cell(_ cell: FeedCell, wantsToShowCommentsFor post: Post) {
@@ -173,6 +247,8 @@ extension FeedController: FeedCellDelegate {
         
         guard let tab = self.tabBarController as? MainTabController else { return }
         guard let user = tab.user else { return }
+        //NEW
+        guard let ownerUid = cell.viewModel?.post.ownerUserID else { return }
         
         cell.viewModel?.post.didLike.toggle()
         
@@ -181,6 +257,9 @@ extension FeedController: FeedCellDelegate {
                 cell.likeButton.setImage(#imageLiteral(resourceName: "like_unselected"), for: .normal)
                 cell.likeButton.tintColor = .black
                 cell.viewModel?.post.likes = post.likes - 1
+                
+                NotificationService.deleteNotification(toUid: ownerUid, type: .like,
+                                                       postId: cell.viewModel?.post.postID)
             }
         } else {
             PostService.likePost(post: post) { _ in

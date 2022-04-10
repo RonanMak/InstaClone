@@ -25,9 +25,9 @@ class MainTabController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        checkoutIfUserIsLoggedIn()
-        
-        fetchUser()
+//        checkoutIfUserIsLoggedIn()
+//        
+//        fetchUser()
     }
     
     // MARK: - API
@@ -54,16 +54,18 @@ class MainTabController: UITabBarController {
     // MARK: - Helpers
     
     func configureViewController(withUser user: User) {
+        view.backgroundColor = .white
+        self.delegate = self
         
         let layout = UICollectionViewFlowLayout()
-        
-        self.delegate = self
        
-//      imageLiteral(resourceNmae:"home_unselected")
-        
         let feed = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "home_unselected"), selectedImage: #imageLiteral(resourceName: "home_selected"), rootViewController: FeedController(collectionViewLayout: layout))
-        let search = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "search_unselected"), selectedImage: #imageLiteral(resourceName: "search_selected"), rootViewController: SearchController())
-        let imageSelector = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "plus_unselected"), selectedImage: #imageLiteral(resourceName: "plus_unselected"), rootViewController: ImageSelectorController())
+        
+        let search = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "search_unselected"), selectedImage: #imageLiteral(resourceName: "search_selected"), rootViewController: SearchController(config: .all))
+        
+        //NEW
+        let imageSelector = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "plus_unselected"), selectedImage: #imageLiteral(resourceName: "plus_unselected"), rootViewController: ImageSelectorController(currentUser: user))
+        
         let notification = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "like_unselected"), selectedImage: #imageLiteral(resourceName: "like_selected"), rootViewController: NotificationController())
         
         let profileController = ProfileController(user: user)
@@ -92,6 +94,7 @@ class MainTabController: UITabBarController {
         let nav = UINavigationController(rootViewController: rootViewController)
         nav.tabBarItem.image = unselectedImage
         nav.tabBarItem.selectedImage = selectedImage
+        nav.navigationBar.tintColor = .black
         return nav
     }
     
@@ -103,7 +106,6 @@ class MainTabController: UITabBarController {
                 let controller = UploadPostController()
                 controller.selectedImage = selectedImage
                 controller.delegate = self
-                
                 controller.currentUser = self.user
                 
                 let nav = UINavigationController(rootViewController: controller)
@@ -144,6 +146,8 @@ extension MainTabController: UITabBarControllerDelegate {
             present(picker, animated: true, completion: nil)
             
             didFinishPickingMedia(picker)
+            
+            return false
         }
         
         return true
