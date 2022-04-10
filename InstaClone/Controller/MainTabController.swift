@@ -25,9 +25,9 @@ class MainTabController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        checkoutIfUserIsLoggedIn()
-//        
-//        fetchUser()
+        checkoutIfUserIsLoggedIn()
+        
+        fetchUser()
     }
     
     // MARK: - API
