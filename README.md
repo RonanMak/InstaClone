@@ -1,2 +1,5 @@
 # InstaClone
-iOS 13 &amp; Swift 5 Programming
+
+- Firebase
+- swift 5
+- iOS 13 Programming

@@ -11,37 +11,43 @@ import Firebase
 struct AuthCredentials {
     let email: String
     let password: String
-    let username: String
     let fullname: String
+    let username: String
     let profileImage: UIImage
 }
 
 struct AuthService {
-    
-    static func logUserIn(with email: String, password: String, completion: AuthDataResultCallback?) {
+    static func logUserIn(withEmail email: String, password: String, completion: AuthDataResultCallback?) {
         Auth.auth().signIn(withEmail: email, password: password, completion: completion)
     }
     
     static func registerUser(withCredential credentials: AuthCredentials, completion: @escaping(Error?) -> Void) {
         
         ImageUploader.uploadImage(image: credentials.profileImage) { imageUrl in
-            Auth.auth().createUser(withEmail: credentials.email, password: credentials.password) {
-                (result, error) in
-                
+            Auth.auth().createUser(withEmail: credentials.email, password: credentials.password) { (result, error) in
                 if let error = error {
-                    print("DEBUG: filed to register user \(error.localizedDescription)")
+                    print("DEBUG: Failed to register user \(error.localizedDescription)")
                     return
                 }
                 
-                guard let userID = result?.user.uid else { return }
+                guard let uid = result?.user.uid else { return }
                 
-                let userData: [String: Any] = ["email": credentials.email,
+                var data: [String: Any] = ["email": credentials.email,
                                            "fullname": credentials.fullname,
                                            "profileImageUrl": imageUrl,
-                                           "userID": userID,
+                                           "uid": uid,
                                            "username": credentials.username]
-                COLLECTION_USERS.document(userID).setData(userData, completion: completion)
+                
+                if let fcmToken = Messaging.messaging().fcmToken {
+                    data["fcmToken"] = fcmToken
+                }
+                
+                COLLECTION_USERS.document(uid).setData(data, completion: completion)
             }
         }
+    }
+    
+    static func resetPassword(withEmail email: String, completion: SendPasswordResetCallback?) {
+        Auth.auth().sendPasswordReset(withEmail: email, completion: completion)
     }
 }

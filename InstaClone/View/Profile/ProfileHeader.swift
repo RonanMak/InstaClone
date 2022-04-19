@@ -6,6 +6,13 @@
 //
 
 import UIKit
+import SDWebImage
+
+protocol ProfileHeaderDelegate: AnyObject {
+    func header(_ profileHeader: ProfileHeader, didTapActionButtonFor user: User)
+    func header(_ profileHeader: ProfileHeader, wantsToViewFollowersFor user: User)
+    func header(_ profileHeader: ProfileHeader, wantsToViewFollowingFor user: User)
+}
 
 class ProfileHeader: UICollectionReusableView {
     
@@ -15,27 +22,25 @@ class ProfileHeader: UICollectionReusableView {
         didSet { configure() }
     }
     
+    weak var delegate: ProfileHeaderDelegate?
+    
     private let profileImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "nightView")
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        return imageView
+        let iv = UIImageView()
+        iv.contentMode = .scaleAspectFill
+        iv.clipsToBounds = true
+        iv.backgroundColor = .lightGray
+        return iv
     }()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ronan mak"
         label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.textColor = .black
         return label
     }()
     
-    // when you try to add the target to the button inside of this declaration, it requires it to be a lazy load becuz you're trying to add a target to the button when it hasn't been initialized yet. it dosen't get initialized until initializtion function gets called
-    
     private lazy var editProfileFollowButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Edit Profile", for: .normal)
+        button.setTitle("Loading", for: .normal)
         button.layer.cornerRadius = 3
         button.layer.borderColor = UIColor.lightGray.cgColor
         button.layer.borderWidth = 0.5
@@ -45,12 +50,10 @@ class ProfileHeader: UICollectionReusableView {
         return button
     }()
     
-    private lazy var postLabel: UILabel = {
+    private let postsLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.textColor = .black
-        label.attributedText = attributedStatText(value: 123, label: "Posts")
         return label
     }()
     
@@ -58,8 +61,11 @@ class ProfileHeader: UICollectionReusableView {
         let label = UILabel()
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.textColor = .black
-        label.attributedText = attributedStatText(value: 53, label: "Followers")
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleFollowersTapped))
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(tap)
+        
         return label
     }()
     
@@ -67,32 +73,33 @@ class ProfileHeader: UICollectionReusableView {
         let label = UILabel()
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.textColor = .black
-        label.attributedText = attributedStatText(value: 1029, label: "Following")
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleFollowingTapped))
+        label.isUserInteractionEnabled = true
+        label.addGestureRecognizer(tap)
+        
         return label
     }()
     
-    let gridButton: UIButton = {
+    private let gridButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(named: "grid"), for: .normal)
+        button.setImage(#imageLiteral(resourceName: "grid"), for: .normal)
         return button
     }()
     
-    let listButton: UIButton = {
+    private let listButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(named: "list"), for: .normal)
+        button.setImage(#imageLiteral(resourceName: "list"), for: .normal)
         button.tintColor = UIColor(white: 0, alpha: 0.2)
         return button
     }()
     
-    let bookmarkButton: UIButton = {
+    private let bookmarkButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(named: "profile_unselected"), for: .normal)
+        button.setImage(#imageLiteral(resourceName: "ribbon"), for: .normal)
         button.tintColor = UIColor(white: 0, alpha: 0.2)
         return button
     }()
-    
-    
     
     // MARK: - Lifecycle
     
@@ -104,18 +111,23 @@ class ProfileHeader: UICollectionReusableView {
         addSubview(profileImageView)
         profileImageView.anchor(top: topAnchor, left: leftAnchor, paddingTop: 16, paddingLeft: 12)
         profileImageView.setDimensions(height: 80, width: 80)
-        profileImageView.layer.cornerRadius = 80/2
+        profileImageView.layer.cornerRadius = 80 / 2
         
         addSubview(nameLabel)
         nameLabel.anchor(top: profileImageView.bottomAnchor, left: leftAnchor, paddingTop: 12, paddingLeft: 12)
         
         addSubview(editProfileFollowButton)
-        editProfileFollowButton.anchor(top:nameLabel.bottomAnchor, left: leftAnchor, right: rightAnchor, paddingTop: 16, paddingLeft: 14, paddingRight: 14)
+        editProfileFollowButton.anchor(top: nameLabel.bottomAnchor, left: leftAnchor,
+                                       right: rightAnchor, paddingTop: 16,
+                                       paddingLeft: 24, paddingRight: 24)
         
-        let stack = UIStackView(arrangedSubviews: [postLabel, followersLabel, followingLabel])
+        let stack = UIStackView(arrangedSubviews: [postsLabel, followersLabel, followingLabel])
+        stack.distribution = .fillEqually
+        
         addSubview(stack)
         stack.centerY(inView: profileImageView)
-        stack.anchor(left: profileImageView.rightAnchor, right: rightAnchor, paddingLeft: 12, paddingRight: 12, height: 50)
+        stack.anchor(left: profileImageView.rightAnchor, right: rightAnchor,
+                     paddingLeft: 12, paddingRight: 12, height: 50)
         
         let topDivider = UIView()
         topDivider.backgroundColor = .lightGray
@@ -130,12 +142,11 @@ class ProfileHeader: UICollectionReusableView {
         addSubview(topDivider)
         addSubview(bottomDivider)
         
-        buttonStack.anchor(left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingBottom: 10, height: 30)
+        buttonStack.anchor(left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, height: 50)
         
-//        topDivider.anchor(top: buttonStack.topAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
-//
-//        bottomDivider.anchor(top: buttonStack.bottomAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
+        topDivider.anchor(top: buttonStack.topAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
         
+        bottomDivider.anchor(top: buttonStack.bottomAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
     }
     
     required init?(coder: NSCoder) {
@@ -145,20 +156,34 @@ class ProfileHeader: UICollectionReusableView {
     // MARK: - Actions
     
     @objc func handleEditProfileFollowTapped() {
-        print("kdjijiji")
+        guard let viewModel = viewModel else { return }
+        delegate?.header(self, didTapActionButtonFor: viewModel.user)
+    }
+    
+    @objc func handleFollowersTapped() {
+        guard let viewModel = viewModel else { return }
+        delegate?.header(self, wantsToViewFollowersFor: viewModel.user)
+    }
+    
+    @objc func handleFollowingTapped() {
+        guard let viewModel = viewModel else { return }
+        delegate?.header(self, wantsToViewFollowingFor: viewModel.user)
     }
     
     // MARK: - Helpers
     
-    func attributedStatText(value: Int, label: String) -> NSAttributedString {
-        let attributedLabel = NSMutableAttributedString(string: "\(value)\n" , attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
-        attributedLabel.append(NSAttributedString(string: label, attributes: [.font: UIFont.systemFont(ofSize: 14), .foregroundColor: UIColor.black]))
-        return attributedLabel
-    }
-    
     func configure() {
-        print("info here")
+        guard let viewModel = viewModel else { return }
+                
+        nameLabel.text = viewModel.fullname
+        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
+        
+        editProfileFollowButton.setTitle(viewModel.followButtonText, for: .normal)
+        editProfileFollowButton.setTitleColor(viewModel.followButtonTextColor, for: .normal)
+        editProfileFollowButton.backgroundColor = viewModel.followButtonBackgroundColor
+        
+        postsLabel.attributedText = viewModel.numberOfPosts
+        followersLabel.attributedText = viewModel.numberOfFollowers
+        followingLabel.attributedText = viewModel.numberOfFollowing
     }
-    
-    
 }

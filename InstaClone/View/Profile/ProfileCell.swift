@@ -11,12 +11,20 @@ class ProfileCell: UICollectionViewCell {
     
     // MARK: - Properties
     
+    var viewModel: PostViewModel? {
+        didSet { configure() }
+    }
+    
+    var photoImageView: UIImage? {
+        didSet { postImageView.image = photoImageView }
+    }
+    
     private let postImageView: UIImageView = {
-       let imageView = UIImageView()
-        imageView.image = UIImage(named: "NewYork")
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        return imageView
+        let iv = UIImageView()
+        iv.image = #imageLiteral(resourceName: "venom-7")
+        iv.contentMode = .scaleAspectFill
+        iv.clipsToBounds = true
+        return iv
     }()
     
     // MARK: - Lifecycle
@@ -32,5 +40,11 @@ class ProfileCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure() {
+        guard let viewModel = viewModel else { return }
+        
+        postImageView.sd_setImage(with: viewModel.imageUrl)
     }
 }
